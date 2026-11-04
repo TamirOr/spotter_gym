@@ -23,14 +23,18 @@
     "react-native": "0.88.1",
     "react-native-safe-area-context": "~5.11.1",
     "react-native-screens": "~4.30.1",
+    "react-native-svg": "15.16.0",
     "react-native-web": "~0.21.4"
   },
   "devDependencies": {
     "@testing-library/react-native": "^14.1.0",
     "@types/jest": "^30.0.0",
     "@types/react": "~19.3.0",
+    "eslint": "^9.0.0",
+    "eslint-config-expo": "~58.0.4",
     "jest": "^30.5.2",
     "jest-expo": "^58.0.14",
+    "prettier": "^3.9.10",
     "typescript": "~6.0.3"
   },
   "scripts": {
@@ -40,10 +44,20 @@
     "typecheck": "tsc --noEmit",
     "lint": "expo lint",
     "test": "jest",
-    "test:db": "supabase/tests/run.sh"
+    "test:db": "supabase/tests/run.sh",
+    "gen:types": "supabase gen types typescript --local > src/lib/database.types.ts",
+    "format": "prettier --write ."
   },
   "private": true,
   "jest": {
-    "preset": "jest-expo"
+    "preset": "jest-expo",
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1",
+      "^@shared/(.*)$": "<rootDir>/supabase/functions/_shared/$1"
+    },
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/supabase/functions/push-dispatch/"
+    ]
   }
 }
