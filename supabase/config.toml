@@ -1,0 +1,25 @@
+# Local Supabase config. Hosted projects are configured in the dashboard; see docs/setup.md.
+project_id = "spotter_gym"
+
+[api]
+schemas = ["public"]
+extra_search_path = ["public", "extensions"]
+
+[db]
+major_version = 17
+
+[auth]
+site_url = "http://localhost:8081"
+additional_redirect_urls = ["http://localhost:8081"]
+# Sessions persist, so friends rarely sign in again.
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+
+[auth.external.google]
+enabled = true
+client_id = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID)"
+secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET)"
+
+# Called by pg_cron with a shared secret, not a user JWT.
+[functions.push-dispatch]
+verify_jwt = false
