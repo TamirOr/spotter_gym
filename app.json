@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "Spotter",
+    "slug": "spotter",
+    "scheme": "spotter",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "app.spotter"
+    },
+    "web": {
+      "output": "single",
+      "bundler": "metro",
+      "favicon": "./assets/favicon.png",
+      "lang": "he",
+      "themeColor": "#FFFFFF"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-localization",
+      "expo-font"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
