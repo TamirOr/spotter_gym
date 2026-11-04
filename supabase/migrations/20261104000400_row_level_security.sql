@@ -28,7 +28,7 @@ alter table public.notifications enable row level security;
 -- profiles: email, settings and tokens are not column-granted; the owner reads them through get_my_profile().
 grant select (id, full_name, avatar_url, created_at) on public.profiles to authenticated;
 grant update (
-  full_name, avatar_url, language, time_zone, paused_until, nudges_enabled,
+  full_name, avatar_url, onboarded_at, language, time_zone, paused_until, nudges_enabled,
   muted_notification_kinds, quiet_hours_start, quiet_hours_end, going_ignores_quiet_hours
 ) on public.profiles to authenticated;
 

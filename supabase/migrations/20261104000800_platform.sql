@@ -37,6 +37,11 @@ begin
       using (bucket_id = 'avatars' and (storage.foldername(name))[1] = (select auth.uid())::text);
   end if;
 
+  -- Live status: realtime applies the same row rules as queries, so clients only hear about visible rows.
+  if exists (select 1 from pg_publication where pubname = 'supabase_realtime') then
+    alter publication supabase_realtime add table public.checkins, public.reactions, public.clique_members;
+  end if;
+
   if exists (select 1 from pg_available_extensions where name = 'pg_cron')
      and exists (select 1 from pg_available_extensions where name = 'pg_net') then
     create extension if not exists pg_cron;

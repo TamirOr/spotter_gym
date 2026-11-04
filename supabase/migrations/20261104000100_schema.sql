@@ -39,6 +39,8 @@ create table public.profiles (
   automation_token_hash text,
   -- Set when the user redeems an invite. Sign-up is invite-only while the app is private.
   joined_at timestamptz,
+  -- Set by the app when first-run setup is finished.
+  onboarded_at timestamptz,
   nudges_enabled boolean not null default true,
   muted_notification_kinds public.notification_kind[] not null default '{}',
   quiet_hours_start time not null default '22:00',
