@@ -51,7 +51,6 @@ Create a free Expo account and an access token. In the GitHub repository, add an
 
 | Kind     | Name                                   | Value                                                              |
 | -------- | -------------------------------------- | ------------------------------------------------------------------ |
-| Variable | `SUPABASE_PROJECT_REF`                 | project ref                                                        |
 | Variable | `EXPO_PUBLIC_SUPABASE_URL`             | project URL                                                        |
 | Variable | `EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | publishable key                                                    |
 | Variable | `EXPO_PUBLIC_VAPID_PUBLIC_KEY`         | VAPID public key                                                   |
