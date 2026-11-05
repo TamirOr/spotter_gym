@@ -32,6 +32,7 @@ jobs:
         with:
           version: latest
       - run: supabase link --project-ref "$SUPABASE_PROJECT_REF"
-      - run: supabase db push --remote
+      # Starting this workflow is the confirmation; CI has no terminal to ask in.
+      - run: supabase db push --remote --yes
       - name: List applied migrations
         run: supabase migration list --remote
