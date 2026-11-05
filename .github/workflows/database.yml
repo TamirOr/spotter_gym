@@ -32,6 +32,6 @@ jobs:
         with:
           version: latest
       - run: supabase link --project-ref "$SUPABASE_PROJECT_REF"
-      - run: supabase db push
+      - run: supabase db push --remote
       - name: List applied migrations
-        run: supabase migration list
+        run: supabase migration list --remote
