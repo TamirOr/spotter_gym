@@ -18,40 +18,38 @@ create function pg_temp.done(p_user uuid, p_day date) returns void language sql 
   values (gen_random_uuid(), p_user, test.activity('Running'), 'done', p_day + time '08:00', p_day + time '09:00', p_day)
 $$;
 
--- The week of Sunday 2026-11-01.
+-- The current week, which the board shows. :week is its Sunday.
+select public.week_start(current_date) as week \gset
 select pg_temp.plan(:'noa', 'SU,TU,TH,SA');
-select pg_temp.done(:'noa', '2026-11-01');
-select pg_temp.done(:'noa', '2026-11-02');
-select pg_temp.done(:'noa', '2026-11-03');
+select pg_temp.done(:'noa', date :'week' + 0);
+select pg_temp.done(:'noa', date :'week' + 1);
+select pg_temp.done(:'noa', date :'week' + 2);
 
 select pg_temp.plan(:'yoav', 'MO,WE');
-select pg_temp.done(:'yoav', '2026-11-02');
-select pg_temp.done(:'yoav', '2026-11-04');
-select pg_temp.done(:'yoav', '2026-11-05');
+select pg_temp.done(:'yoav', date :'week' + 1);
+select pg_temp.done(:'yoav', date :'week' + 3);
+select pg_temp.done(:'yoav', date :'week' + 4);
 
 select pg_temp.plan(:'maya', 'MO,TU,WE,TH');
-select pg_temp.done(:'maya', '2026-11-02');
-select pg_temp.done(:'maya', '2026-11-03');
-select pg_temp.done(:'maya', '2026-11-04');
+select pg_temp.done(:'maya', date :'week' + 1);
+select pg_temp.done(:'maya', date :'week' + 2);
+select pg_temp.done(:'maya', date :'week' + 3);
 
 select pg_temp.plan(:'eitan', 'MO');
-select pg_temp.done(:'eitan', '2026-11-02');
+select pg_temp.done(:'eitan', date :'week' + 1);
 
 select test.eq(
-  (select row(planned, completed)::text from public.consistency(:'noa', '2026-11-01', '2026-11-07')),
+  (select row(planned, completed)::text from public.consistency(:'noa', date :'week', date :'week' + 6)),
   '(4,3)', 'an unplanned workout fills a missed slot'
 );
 select test.eq(
-  (select row(planned, completed)::text from public.consistency(:'yoav', '2026-11-01', '2026-11-07')),
+  (select row(planned, completed)::text from public.consistency(:'yoav', date :'week', date :'week' + 6)),
   '(2,2)', 'extra workouts do not push past 100%'
 );
 select test.eq(
-  (select row(planned, completed)::text from public.consistency(:'yoav', '2026-10-25', '2026-11-07')),
+  (select row(planned, completed)::text from public.consistency(:'yoav', date :'week' - 7, date :'week' + 6)),
   '(4,2)', 'a big week does not cover a missed one'
 );
-
--- The board always shows the clique's current week, so move the fixture into it.
-update public.checkins set local_day = local_day + (public.week_start(current_date) - date '2026-11-01');
 
 set role authenticated;
 select test.login(:'noa');
