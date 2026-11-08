@@ -41,7 +41,7 @@ select test.fails($$select email from public.profiles$$, 'permission denied', 'n
 select test.fails($$update public.profiles set email = 'x@example.com'$$, 'permission denied', 'email is not editable');
 select test.fails($$select * from public.notifications$$, 'permission denied', 'the outbox is server-only');
 select test.fails($$select public.claim_due_notifications()$$, 'permission denied', 'only the server dispatches pushes');
-select test.fails($$update public.goals set target = 10$$, 'permission denied', 'goal targets change only through revise_goal');
+select test.fails($$update public.goals set target = 10$$, 'permission denied', 'goal targets change only through update_goal');
 
 reset role;
 select test.eq((select full_name from public.profiles where id = :'noa'), 'Noa B', 'friends cannot edit my profile');

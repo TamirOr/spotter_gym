@@ -64,4 +64,47 @@ select test.login(:'yoav');
 select test.eq((select count(*) from public.plan_items)::integer, 0, 'nobody else can read my plan');
 select test.fails($$select public.remove_plan_item('$$ || :'gym' || $$')$$, 'not_found', 'nobody else can remove my plan');
 
+-- Editing: time and reminder change in place; a new rule replaces the item from now on.
+select test.login(:'noa');
+insert into public.plan_items (activity_id, rrule, starts_on, time)
+values (test.activity('Gym'), 'FREQ=WEEKLY;BYDAY=MO', '2026-11-01', '07:00')
+returning id as monday \gset
+select test.eq(
+  public.edit_plan_item(:'monday', test.activity('Gym'), '08:00', 'FREQ=WEEKLY;BYDAY=MO', '2026-11-01', 15),
+  :'monday'::uuid,
+  'a new time keeps the item'
+);
+select test.eq((select time from public.plan_items where id = :'monday'), '08:00'::time, 'with the new time');
+select public.edit_plan_item(:'monday', test.activity('Running'), '08:00', 'FREQ=WEEKLY;INTERVAL=3;BYDAY=MO,WE', '2026-11-08', 15) as replaced \gset
+select test.ok(:'replaced'::uuid <> :'monday'::uuid, 'a new rule or activity replaces the item');
+select test.eq((select count(*) from public.plan_items where deleted_at is null and id in (:'monday', :'replaced'))::integer, 1, 'only the new item stays in the plan');
+select test.eq((select rrule from public.plan_items where id = :'replaced'), 'FREQ=WEEKLY;INTERVAL=3;BYDAY=MO,WE', 'every N weeks');
+select test.fails($$select public.edit_plan_item('$$ || :'monday' || $$', test.activity('Gym'), null, null, '2026-11-10', null)$$, 'not_found', 'a replaced item cannot be edited');
+
+-- The week grid keeps a Done whose plan item was removed, and says which day a moved workout was planned on.
+reset role;
+update public.profiles set time_zone = 'UTC' where id = :'noa';
+select public.week_start(current_date) as ws \gset
+insert into public.plan_items (user_id, activity_id, rrule, starts_on, created_at)
+values (:'noa', test.activity('Boxing'), 'FREQ=WEEKLY;BYDAY=SU,MO,TU,WE,TH,FR,SA', current_date - 7, now() - interval '8 days')
+returning id as daily \gset
+insert into public.plan_exceptions (plan_item_id, occurs_on, action, new_date)
+values (:'daily', public.week_start(current_date) + 1, 'move', public.week_start(current_date) + 2);
+set role authenticated;
+select test.login(:'noa');
+select (public.mark_done(gen_random_uuid(), test.activity('Boxing'), now() - interval '1 day')).id as boxing \gset
+select test.eq(
+  (select planned_on from public.my_week(current_date) where plan_item_id = :'daily' and day = date :'ws' + 2 order by planned_on limit 1),
+  date :'ws' + 1,
+  'a moved workout knows the day it was planned on'
+);
+select public.remove_plan_item(:'daily');
+select test.eq(
+  (select count(*) from public.my_week(current_date - 1) where checkin_id = :'boxing')::integer, 1,
+  'a Done stays on the grid after its plan item is removed'
+);
+
+select test.login(:'yoav');
+select test.fails($$select public.edit_plan_item('$$ || :'replaced' || $$', test.activity('Gym'), null, null, '2026-11-10', null)$$, 'not_found', 'nobody else edits my plan');
+
 rollback;
