@@ -29,15 +29,14 @@ function DayTile({ cell }: { cell: DayCell }) {
   const { language, locale } = useLanguage();
   const activity = useActivity(cell.activityId);
   const ink = cell.isToday ? colors.background : colors.muted;
-  const canChange = cell.mark === 'planned' && cell.planItemId !== null;
+  // A logged workout can be fixed or deleted; a planned one logged, moved or skipped.
+  const canOpen = cell.mark !== 'none';
 
   return (
     <Pressable
       accessibilityRole="button"
-      disabled={!canChange}
-      onPress={() =>
-        router.push({ pathname: '/day/[date]', params: { date: cell.date, planItemId: cell.planItemId! } })
-      }
+      disabled={!canOpen}
+      onPress={() => router.push({ pathname: '/day/[date]', params: { date: cell.date } })}
       style={[styles.day, cell.isToday && styles.today]}
     >
       <Text variant="caption" style={{ color: ink }}>
@@ -103,7 +102,7 @@ export function MeScreen() {
       />
       {goals.length === 0 ? <Text variant="small">{t('me.noGoals')}</Text> : null}
       {goals.map((goal) => (
-        <GoalRow key={goal.goal_id} goal={goal} />
+        <GoalRow key={goal.goal_id} goal={goal} onPress={() => router.push(`/goals/${goal.goal_id}`)} />
       ))}
 
       <View style={styles.links}>

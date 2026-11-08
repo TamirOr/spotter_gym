@@ -1,7 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import type { Rpc, Tables } from '@/lib/database.types';
-import { addDays } from '@/lib/dates';
 import { queryClient } from '@/lib/queryClient';
 import { queryKeys } from '@/lib/queryKeys';
 import { supabase, unwrap } from '@/lib/supabase';
@@ -58,24 +57,48 @@ export function useRemovePlanItem() {
   });
 }
 
-/** Skip or move one occurrence without changing the series. */
+export type PlanItemEdit = NewPlanItem & { id: string };
+
+/** Time and reminder change in place; a new activity or repeat rule replaces the item from this week on. */
+export function useEditPlanItem() {
+  return useMutation({
+    mutationFn: async (item: PlanItemEdit) =>
+      unwrap(
+        await supabase.rpc('edit_plan_item', {
+          p_plan_item_id: item.id,
+          p_activity_id: item.activity_id,
+          p_time: item.time,
+          p_rrule: item.rrule,
+          p_starts_on: item.starts_on,
+          p_reminder_lead_min: item.reminder_lead_min,
+        }),
+      ),
+    onSuccess: invalidatePlan,
+  });
+}
+
+/**
+ * Skip one occurrence, or move it to another day, without changing the series. An occurrence is named by
+ * the day it was planned on, so moving a moved workout again replaces the first move.
+ */
 export function useChangeOccurrence() {
   return useMutation({
     mutationFn: async ({
       planItemId,
-      day,
-      moveToNextDay,
+      plannedOn,
+      moveTo,
     }: {
       planItemId: string;
-      day: string;
-      moveToNextDay: boolean;
+      plannedOn: string;
+      /** Null skips it. */
+      moveTo: string | null;
     }) =>
       unwrap(
         await supabase.from('plan_exceptions').upsert({
           plan_item_id: planItemId,
-          occurs_on: day,
-          action: moveToNextDay ? 'move' : 'skip',
-          new_date: moveToNextDay ? addDays(day, 1) : null,
+          occurs_on: plannedOn,
+          action: moveTo ? 'move' : 'skip',
+          new_date: moveTo,
         }),
       ),
     onSuccess: invalidatePlan,

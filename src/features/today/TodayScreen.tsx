@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { useUserId } from '@/features/auth/AuthProvider';
+import { useMarkSeen } from '@/features/cheers/api';
 import { CliqueSwitcher } from '@/features/cliques/CliqueSwitcher';
 import { useSelectedClique } from '@/features/cliques/SelectedCliqueProvider';
 import { useGoingPhotos } from '@/features/photos/api';
@@ -25,6 +26,8 @@ export function TodayScreen() {
   const friends = useCliqueToday(clique?.id);
   const photos = useGoingPhotos();
   const me = useUserId();
+  // Friends' workouts on screen count as seen, so the athlete knows the clique noticed.
+  useMarkSeen(friends.data?.map((friend) => (friend.status === 'none' ? null : friend.checkin_id)) ?? []);
 
   return (
     <Screen footer={myToday.data ? <TodayBar state={todayBarState(myToday.data)} /> : null}>

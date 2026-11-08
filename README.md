@@ -5,9 +5,10 @@ and cheers are visible to the clique. The core loop: **see friends training → 
 climb the leaderboard**.
 
 Phase 1 (this repository): sign-in and sign-up with a 6-digit email code, admin approval of sign-ups and
-user management, profiles, friends, goals, a weekly plan, manual
-check-ins (Going and Done), one-time Going photos, cliques, the Today screen and Today bar, the consistency
-leaderboard, cheers, nudges and web push. It ships as a free home-screen web app, so it costs $0 while the group is private.
+user management, profiles, friends, goals (editable, with an optional end date), workout routines, a weekly
+plan (edit, skip or move a workout), manual check-ins (Going and Done, editable afterwards), one-time Going
+photos, cliques with owner tools, the Today screen and Today bar, the consistency leaderboard, cheers with "seen"
+receipts, nudges and web push. It ships as a free home-screen web app, so it costs $0 while the group is private.
 
 ## Stack
 

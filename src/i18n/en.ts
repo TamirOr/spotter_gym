@@ -78,6 +78,8 @@ export const en: Translation = {
       title: '{{activity}}',
       didNotHappen: 'It didn’t',
     },
+    seen_one: 'Seen by 1 in your clique',
+    seen_other: 'Seen by {{count}} in your clique',
     done: {
       eyebrow: 'Done today',
       noCheers: 'Nice work!',
@@ -116,6 +118,8 @@ export const en: Translation = {
     title: 'Your cheers today',
     empty: 'No cheers yet',
     formerMember: 'Former member',
+    seenHeading: 'Seen by',
+    noViews: 'Nobody has seen it yet',
   },
   log: {
     title: 'Log a workout',
@@ -127,6 +131,7 @@ export const en: Translation = {
     distance: 'Distance in km',
     note: 'Note',
     submit: 'Done',
+    editTitle: 'Edit workout',
   },
   activityPicker: {
     label: 'Activity',
@@ -147,6 +152,13 @@ export const en: Translation = {
       week: 'Week',
       month: 'Month',
     },
+    notifications: 'Notifications from this clique',
+    owner: 'Owner',
+    edit: 'Edit clique',
+    makeOwner: 'Make owner',
+    makeOwnerConfirm: 'Make {{name}} the owner of {{clique}}?',
+    removeMember: 'Remove',
+    removeMemberConfirm: 'Remove {{name}} from {{clique}}?',
     lastWeekWinner: 'Last week’s winner: {{name}}',
     membersHeading: 'Members and shared goals',
     noSharedGoals: 'No shared goals',
@@ -163,6 +175,10 @@ export const en: Translation = {
     title: 'New clique',
     name: 'Clique name',
     create: 'Create',
+  },
+  editClique: {
+    title: 'Edit clique',
+    photo: 'Change photo',
   },
   invite: {
     title: 'Invite friends',
@@ -189,8 +205,13 @@ export const en: Translation = {
     progress: '{{progress}} of {{target}}',
     day: {
       skip: 'Skip this one',
-      moveTomorrow: 'Move to tomorrow',
+      moveTo: 'Move to another day this week',
       log: 'Log a workout',
+      logged: 'Logged',
+      planned: 'Planned',
+      edit: 'Edit',
+      delete: 'Delete',
+      deleteConfirm: 'Delete this workout? Its cheers go with it.',
     },
   },
   goal: {
@@ -215,6 +236,18 @@ export const en: Translation = {
   },
   goalEditor: {
     title: 'New goal',
+    editTitle: 'Edit goal',
+    nextPeriodNote: 'A new target or period starts next period, so this period’s progress stays as it is.',
+    ends: 'Ends',
+    endsNever: 'No end date',
+    endsIn: {
+      weeks4: 'In 4 weeks',
+      months3: 'In 3 months',
+      months6: 'In 6 months',
+    },
+    endsOn: 'Until {{date}}',
+    delete: 'Delete goal',
+    deleteConfirm: 'Delete this goal?',
     metric: 'Measure',
     metrics: {
       sessions: 'Sessions',
@@ -256,11 +289,12 @@ export const en: Translation = {
     add: 'Add a workout',
     empty: 'No workouts planned yet',
     remove: 'Remove',
+    edit: 'Edit',
     lockNote: 'Changes count toward the leaderboard from next week',
     repeat: {
       once: 'Once',
       weekly: 'Every week',
-      biweekly: 'Every 2 weeks',
+      everyNWeeks: 'Every few weeks',
       monthly: 'Every month',
     },
     rule: {
@@ -273,6 +307,8 @@ export const en: Translation = {
   },
   planEditor: {
     title: 'New planned workout',
+    editTitle: 'Edit planned workout',
+    intervalWeeks_other: 'Every {{count}} weeks',
     repeat: 'Repeat',
     days: 'Days',
     date: 'Date',
@@ -306,6 +342,7 @@ export const en: Translation = {
     goals: 'Goals',
     recent: 'Recent workouts',
     noRecent: 'No recent workouts',
+    sendNote: 'Send a note',
   },
   settings: {
     title: 'Settings',
@@ -334,6 +371,8 @@ export const en: Translation = {
     },
     quietHours: 'Quiet hours',
     quietHoursRange: '{{start}}–{{end}}',
+    quietHoursFrom: 'Starts',
+    quietHoursUntil: 'Ends',
     goingThroughQuiet: '“Going” gets through quiet hours',
     nudges: 'Receive nudges',
     pause: 'Pause',
@@ -483,5 +522,7 @@ export const en: Translation = {
     photoAlreadySeen: 'This photo can be seen only once',
     photoUnavailable: 'This photo is no longer available',
     routineDaysExceedTimes: 'More days are chosen than workouts a week',
+    invalidEndDate: 'A goal can’t end in the past',
+    notAllowed: 'Only the clique’s owner can do that',
   },
 };

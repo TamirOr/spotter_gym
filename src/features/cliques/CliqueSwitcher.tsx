@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Pressable, StyleSheet, View } from 'react-native';
 
-import { Icon, Text, colors, radii, spacing, TOUCH_TARGET } from '@/ui';
+import { Avatar, Icon, Text, colors, radii, spacing, TOUCH_TARGET } from '@/ui';
 
 import { useMyCliques } from './api';
 import { useSelectedClique } from './SelectedCliqueProvider';
@@ -23,6 +23,7 @@ export function CliqueSwitcher() {
         onPress={() => setOpen(true)}
         style={styles.trigger}
       >
+        {clique?.photo_url ? <Avatar name={clique.name} photoUrl={clique.photo_url} size={32} /> : null}
         <Text variant="title" userContent>
           {clique?.name ?? t('clique.none')}
         </Text>

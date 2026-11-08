@@ -8,8 +8,6 @@ export type DayCell = {
   /** Done shows a check; planned an empty ring. A missed or skipped day shows nothing: encourage, never shame. */
   mark: 'done' | 'planned' | 'none';
   activityId: string | null;
-  /** The plan occurrence a tap can skip or move. */
-  planItemId: string | null;
 };
 
 export function weekGrid(today: string, entries: WeekEntry[]): DayCell[] {
@@ -23,7 +21,6 @@ export function weekGrid(today: string, entries: WeekEntry[]): DayCell[] {
       isToday: date === today,
       mark: done ? 'done' : planned ? 'planned' : 'none',
       activityId: shown?.activity_id ?? null,
-      planItemId: planned?.plan_item_id ?? null,
     };
   });
 }

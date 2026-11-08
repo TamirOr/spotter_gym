@@ -4,6 +4,7 @@ import { weekGrid } from './weekGrid';
 
 const entry = (day: string, status: WeekEntry['status'], activity_id = 'gym'): WeekEntry => ({
   day,
+  planned_on: status === 'done' ? null : day,
   activity_id,
   time: null,
   plan_item_id: status === 'done' ? null : 'plan',
@@ -29,7 +30,7 @@ describe('weekGrid', () => {
 
   it('shows done and planned days', () => {
     expect(grid[0].mark).toBe('done');
-    expect(grid[3]).toMatchObject({ mark: 'planned', planItemId: 'plan' });
+    expect(grid[3]).toMatchObject({ mark: 'planned', activityId: 'gym' });
   });
 
   it('never marks a missed or skipped day', () => {
@@ -38,6 +39,6 @@ describe('weekGrid', () => {
   });
 
   it('prefers a done workout on a day with both', () => {
-    expect(grid[5]).toMatchObject({ mark: 'done', activityId: 'boxing', planItemId: 'plan' });
+    expect(grid[5]).toMatchObject({ mark: 'done', activityId: 'boxing' });
   });
 });

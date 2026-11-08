@@ -8,7 +8,7 @@ import { OneTimePhoto } from '@/features/photos/OneTimePhoto';
 import { useLanguage } from '@/lib/useLanguage';
 import { Button, ErrorMessage, Sheet, Text, TextField, colors, fonts, radii, spacing, TOUCH_TARGET } from '@/ui';
 
-import { useCheerTarget, useSendCheer, type CheerInput } from './api';
+import { useCheerTarget, useMarkSeen, useSendCheer, type CheerInput } from './api';
 
 /**
  * Opened from a friend line or a Going push. A Going photo, if there is one, can be opened once here.
@@ -19,6 +19,7 @@ export function CheerSheet() {
   const { language } = useLanguage();
   const { checkinId } = useLocalSearchParams<{ checkinId: string }>();
   const target = useCheerTarget(checkinId);
+  useMarkSeen([checkinId]);
   const sendCheer = useSendCheer();
   const [note, setNote] = useState('');
 

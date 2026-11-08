@@ -15,6 +15,10 @@ export function useSendNudge() {
         lines?.map((line) => (line.user_id === recipientId ? { ...line, nudged: true, can_nudge: false } : line)),
       );
     },
-    onSettled: () => queryClient.invalidateQueries({ queryKey: ['clique-today'] }),
+    onSettled: () =>
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['clique-today'] }),
+        queryClient.invalidateQueries({ queryKey: ['note-target'] }),
+      ]),
   });
 }

@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { activityLabel } from '@/features/activities/activities';
 import { useActivity } from '@/features/activities/api';
@@ -21,13 +21,18 @@ function PlanItemRow({ item }: { item: PlanItem }) {
 
   return (
     <View style={styles.row}>
-      <View style={styles.text}>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityHint={t('plan.edit')}
+        onPress={() => router.push(`/plan/${item.id}`)}
+        style={styles.text}
+      >
         <Text variant="strong" userContent>
           {activity ? activityLabel(activity, language) : ''}
         </Text>
         <Text variant="small">{item.time ? t('plan.atTime', { rule, time: shortTime(item.time) }) : rule}</Text>
         <ErrorMessage error={removePlanItem.error} />
-      </View>
+      </Pressable>
       <Button
         label={t('plan.remove')}
         variant="quiet"

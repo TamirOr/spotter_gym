@@ -5,6 +5,8 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { activityLabel } from '@/features/activities/activities';
 import { useActivity } from '@/features/activities/api';
 import { useUserId } from '@/features/auth/AuthProvider';
+import { useSeenToday } from '@/features/cheers/api';
+import { viewCount } from '@/features/cheers/seen';
 import { pickGoingPhoto, useAddGoingPhoto, useGoingPhotos } from '@/features/photos/api';
 import { photoState } from '@/features/photos/photos';
 import { minutesBetween, shortTime } from '@/lib/dates';
@@ -100,6 +102,9 @@ export function TodayBar({ state }: { state: TodayBarState }) {
   const addPhoto = useAddGoingPhoto();
   const { eyebrow, title } = useBarText(state);
   const action = mainAction(state);
+  const { data: views = [] } = useSeenToday(useUserId());
+  // While training or once done, the athlete sees that the clique noticed.
+  const seen = state.kind === 'going' || state.kind === 'done' ? viewCount(views, state.checkinId) : 0;
 
   function onAction() {
     if (action === 'seeCheers') {
@@ -125,6 +130,11 @@ export function TodayBar({ state }: { state: TodayBarState }) {
           {state.kind === 'goingExpired' ? (
             <Pressable accessibilityRole="button" onPress={() => cancelGoing.mutate()} style={styles.secondary}>
               <Text style={styles.secondaryLabel}>{t('todayBar.expired.didNotHappen')}</Text>
+            </Pressable>
+          ) : null}
+          {seen > 0 ? (
+            <Pressable accessibilityRole="button" onPress={() => router.push('/cheers')} style={styles.secondary}>
+              <Text style={styles.seenLabel}>{t('todayBar.seen', { count: seen })}</Text>
             </Pressable>
           ) : null}
         </View>
@@ -163,5 +173,6 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
   },
   photoNote: { marginTop: 4, fontFamily: fonts.regular, fontSize: 13, color: colors.inverseMuted },
+  seenLabel: { fontFamily: fonts.regular, fontSize: 13, color: colors.inverseMuted, textDecorationLine: 'underline' },
   action: { minWidth: 92 },
 });
