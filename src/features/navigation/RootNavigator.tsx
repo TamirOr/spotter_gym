@@ -13,9 +13,12 @@ const sheet = {
   contentStyle: { backgroundColor: 'transparent' },
 } as const;
 
-/** Sign-in until there is a session, waiting until approved, onboarding until set up, then the app. */
+/**
+ * Sign-in until there is a session, waiting until approved, onboarding until set up, then the app.
+ * Admins see the admin screens or the regular app, one at a time, and switch between them.
+ */
 export function RootNavigator() {
-  const { stage, isAdmin } = useAppSession();
+  const { stage, view } = useAppSession();
   if (stage === 'loading') {
     return (
       <View style={styles.loading}>
@@ -35,7 +38,13 @@ export function RootNavigator() {
       <Stack.Protected guard={stage === 'onboarding'}>
         <Stack.Screen name="onboarding" />
       </Stack.Protected>
-      <Stack.Protected guard={stage === 'app'}>
+      {/* Listed before the regular app, so an admin lands on the admin home. */}
+      <Stack.Protected guard={stage === 'app' && view === 'admin'}>
+        <Stack.Screen name="admin/index" />
+        <Stack.Screen name="admin/users" />
+        <Stack.Screen name="admin/user/[userId]" />
+      </Stack.Protected>
+      <Stack.Protected guard={stage === 'app' && view === 'user'}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="plan/index" />
         <Stack.Screen name="friends" />
@@ -53,11 +62,6 @@ export function RootNavigator() {
         <Stack.Screen name="routine/[routineId]" options={sheet} />
         <Stack.Screen name="day/[date]" options={sheet} />
         <Stack.Screen name="clique/new" options={sheet} />
-      </Stack.Protected>
-      <Stack.Protected guard={stage === 'app' && isAdmin}>
-        <Stack.Screen name="admin/index" />
-        <Stack.Screen name="admin/users" />
-        <Stack.Screen name="admin/user/[userId]" />
       </Stack.Protected>
     </Stack>
   );

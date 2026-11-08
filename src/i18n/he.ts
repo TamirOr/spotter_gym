@@ -178,7 +178,7 @@ export const he = {
     noRoutines: 'עוד אין שגרת אימונים',
     friends: 'חברים',
     settings: 'הגדרות',
-    admin: 'ניהול',
+    backToAdmin: 'חזרה למסך הניהול',
     progress: '{{progress}} מתוך {{target}}',
     day: {
       skip: 'דילוג על האימון הזה',
@@ -393,6 +393,7 @@ export const he = {
   },
   admin: {
     title: 'ניהול',
+    switchToUser: 'מעבר למסך משתמש',
     healthOk: 'המערכת תקינה',
     healthStuck: 'התראות תקועות',
     pushBacklog: '{{n}} התראות ממתינות לשליחה, הוותיקה מלפני {{minutes}} דק׳',

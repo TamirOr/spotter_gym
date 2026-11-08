@@ -17,6 +17,7 @@ import {
   useRejectUser,
 } from './api';
 import { AdminUserRow } from './AdminUserRow';
+import { useAdminView } from './AdminViewProvider';
 import { groupUsers, isHealthy, type AdminUser } from './users';
 
 /** Green when pushes go out on time, red with the backlog when they are stuck. */
@@ -116,13 +117,17 @@ export function AdminScreen() {
   const added = useAddedUsers();
   const approve = useApproveUser();
   const cancel = useCancelAddedUser();
+  const { switchTo } = useAdminView();
   const groups = groupUsers(users.data ?? []);
 
   return (
-    <Screen back contentStyle={{ gap: spacing.md }}>
-      <Text variant="title" role="heading">
-        {t('admin.title')}
-      </Text>
+    <Screen contentStyle={{ gap: spacing.md }}>
+      <View style={styles.header}>
+        <Text variant="title" role="heading">
+          {t('admin.title')}
+        </Text>
+        <Button label={t('admin.switchToUser')} variant="outline" onPress={() => switchTo('user')} />
+      </View>
       <HealthStrip />
 
       <SectionHeader title={t('admin.pending', { n: groups.pending.length })} />
@@ -169,6 +174,7 @@ export function AdminScreen() {
 }
 
 const styles = StyleSheet.create({
+  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: spacing.sm },
   health: { borderRadius: radii.sm, padding: spacing.md, gap: spacing.xs },
   healthOk: { backgroundColor: colors.surface },
   healthBad: { borderWidth: 1, borderColor: colors.error },

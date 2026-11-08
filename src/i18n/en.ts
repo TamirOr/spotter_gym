@@ -176,7 +176,7 @@ export const en: Translation = {
     noRoutines: 'No workout routine yet',
     friends: 'Friends',
     settings: 'Settings',
-    admin: 'Admin',
+    backToAdmin: 'Back to admin',
     progress: '{{progress}} of {{target}}',
     day: {
       skip: 'Skip this one',
@@ -386,6 +386,7 @@ export const en: Translation = {
   },
   admin: {
     title: 'Admin',
+    switchToUser: 'Switch to user view',
     healthOk: 'All systems normal',
     healthStuck: 'Pushes are stuck',
     pushBacklog: '{{n}} pushes waiting, the oldest for {{minutes}} min',

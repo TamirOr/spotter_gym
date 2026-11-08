@@ -4,6 +4,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { activityLabel } from '@/features/activities/activities';
 import { useActivity } from '@/features/activities/api';
+import { useAdminView } from '@/features/admin/AdminViewProvider';
 import { useGoalProgress } from '@/features/goals/api';
 import { GoalRow } from '@/features/goals/GoalRow';
 import { useWeek } from '@/features/plan/api';
@@ -63,6 +64,7 @@ export function MeScreen() {
   const { t } = useTranslation();
   const today = localToday();
   const { data: profile } = useProfile();
+  const { switchTo } = useAdminView();
   const { data: entries = [] } = useWeek(weekStart(today));
   const { data: goals = [] } = useGoalProgress(null);
   const { data: routines = [] } = useRoutines();
@@ -107,7 +109,7 @@ export function MeScreen() {
       <View style={styles.links}>
         <ListRow label={t('me.friends')} onPress={() => router.push('/friends')} />
         <ListRow label={t('me.settings')} onPress={() => router.push('/settings')} />
-        {profile?.is_admin ? <ListRow label={t('me.admin')} onPress={() => router.push('/admin')} /> : null}
+        {profile?.is_admin ? <ListRow label={t('me.backToAdmin')} onPress={() => switchTo('admin')} /> : null}
       </View>
     </Screen>
   );
