@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 import { useUserId } from '@/features/auth/AuthProvider';
-import { GoalForm } from '@/features/goals/GoalForm';
 import { useProfile, useUpdateProfile } from '@/features/profile/api';
 import { pickAndUploadAvatar } from '@/features/profile/avatar';
 import { PushToggle } from '@/features/push/PushToggle';
@@ -11,9 +10,12 @@ import { RoutineWizard } from '@/features/routines/RoutineWizard';
 import { useLanguage } from '@/lib/useLanguage';
 import { Avatar, Button, ErrorMessage, Screen, Text, TextField, spacing } from '@/ui';
 
-type Step = 'profile' | 'routines' | 'goal' | 'notifications';
+type Step = 'profile' | 'routines' | 'notifications';
 
-/** Name and photo, optional workout routines, a first goal, then notifications after explaining why. */
+/**
+ * Name and photo, optional workout routines, then notifications after explaining why.
+ * Goals are added later on Me, so skipping routines leads straight on.
+ */
 export function OnboardingScreen() {
   const { t } = useTranslation();
   const { language } = useLanguage();
@@ -68,17 +70,7 @@ export function OnboardingScreen() {
         </>
       ) : null}
 
-      {step === 'routines' ? <RoutineWizard onDone={() => setStep('goal')} /> : null}
-
-      {step === 'goal' ? (
-        <>
-          <Text variant="title" role="heading">
-            {t('onboarding.goalTitle')}
-          </Text>
-          <Text variant="small">{t('onboarding.goalHint')}</Text>
-          <GoalForm submitLabel={t('common.continue')} onSaved={() => setStep('notifications')} />
-        </>
-      ) : null}
+      {step === 'routines' ? <RoutineWizard onDone={() => setStep('notifications')} /> : null}
 
       {step === 'notifications' ? (
         <>
