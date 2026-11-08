@@ -1,13 +1,15 @@
-import { Platform } from 'react-native';
-
 import { supabase } from '@/lib/supabase';
 
-export async function signInWithGoogle(): Promise<void> {
-  const { error } = await supabase.auth.signInWithOAuth({
-    provider: 'google',
-    // Returns to the installed home-screen app, which picks the session up from the URL.
-    options: { redirectTo: Platform.OS === 'web' ? window.location.origin : undefined },
-  });
+// Sign-in and sign-up are the same: a 6-digit code sent by email. A code rather than a magic link,
+// because a link opens in Safari and would not sign in the app installed on the Home Screen.
+
+export async function sendCode(email: string): Promise<void> {
+  const { error } = await supabase.auth.signInWithOtp({ email: email.trim(), options: { shouldCreateUser: true } });
+  if (error) throw error;
+}
+
+export async function verifyCode(email: string, code: string): Promise<void> {
+  const { error } = await supabase.auth.verifyOtp({ email: email.trim(), token: code.trim(), type: 'email' });
   if (error) throw error;
 }
 

@@ -6,13 +6,13 @@ import { useProfile } from '@/features/profile/api';
 import { refreshPushSubscription, registerServiceWorker } from '@/features/push/webPush';
 import { setLanguage } from '@/i18n';
 
-export type AppStage = 'loading' | 'welcome' | 'onboarding' | 'app';
+export type AppStage = 'loading' | 'signIn' | 'onboarding' | 'app';
 
 /** Where the signed-in journey stands, plus the side effects of being in the app. */
 export function useAppSession(): AppStage {
   const { session, ready } = useAuth();
   const profile = useProfile(!!session);
-  const joined = !!profile.data?.joined_at;
+  const signedIn = !!profile.data;
   const language = profile.data?.language;
 
   useEffect(() => {
@@ -20,13 +20,13 @@ export function useAppSession(): AppStage {
   }, [language]);
 
   useEffect(() => {
-    if (!joined) return;
+    if (!signedIn) return;
     void registerServiceWorker()?.then(refreshPushSubscription);
-  }, [joined]);
+  }, [signedIn]);
 
-  useLiveUpdates(joined);
+  useLiveUpdates(signedIn);
 
   if (!ready || (session && profile.isLoading)) return 'loading';
-  if (!session || !joined) return 'welcome';
+  if (!session || !profile.data) return 'signIn';
   return profile.data?.onboarded_at ? 'app' : 'onboarding';
 }

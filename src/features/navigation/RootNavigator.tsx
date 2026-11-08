@@ -13,7 +13,7 @@ const sheet = {
   contentStyle: { backgroundColor: 'transparent' },
 } as const;
 
-/** Welcome until an invite is redeemed, onboarding until set up, then the app. */
+/** Sign-in until there is a session, onboarding until set up, then the app. */
 export function RootNavigator() {
   const stage = useAppSession();
   if (stage === 'loading') {
@@ -26,8 +26,8 @@ export function RootNavigator() {
 
   const navigator = (
     <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }}>
-      <Stack.Protected guard={stage === 'welcome'}>
-        <Stack.Screen name="welcome" />
+      <Stack.Protected guard={stage === 'signIn'}>
+        <Stack.Screen name="sign-in" />
       </Stack.Protected>
       <Stack.Protected guard={stage === 'onboarding'}>
         <Stack.Screen name="onboarding" />
@@ -52,7 +52,7 @@ export function RootNavigator() {
     </Stack>
   );
 
-  // Clique data needs a joined user, so the provider only wraps the app itself.
+  // Clique data needs a signed-in user, so the provider only wraps the app itself.
   return stage === 'app' ? <SelectedCliqueProvider>{navigator}</SelectedCliqueProvider> : navigator;
 }
 

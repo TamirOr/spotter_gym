@@ -5,9 +5,7 @@ const KNOWN_ERRORS = {
   activity_exists: 'errors.activityExists',
   checkin_cancelled: 'errors.checkinCancelled',
   clique_full: 'errors.cliqueFull',
-  invalid_invite: 'errors.invalidInvite',
   not_friends: 'errors.notFriends',
-  not_joined: 'errors.notJoined',
   outside_logging_window: 'errors.outsideLoggingWindow',
 } as const satisfies Record<string, TranslationKey>;
 

@@ -92,10 +92,3 @@ export function useInviteToClique() {
     onSuccess: invalidateCliques,
   });
 }
-
-export function useCreateInvite() {
-  return useMutation({
-    mutationFn: async (cliqueId: string | null) =>
-      unwrap(await supabase.rpc('create_invite', { p_clique_id: cliqueId })),
-  });
-}

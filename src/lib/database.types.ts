@@ -29,7 +29,6 @@ type ProfileRow = {
   time_zone: string;
   paused_until: string | null;
   automation_token_hash: string | null;
-  joined_at: string | null;
   onboarded_at: string | null;
   nudges_enabled: boolean;
   muted_notification_kinds: Enums['notification_kind'][];
@@ -145,16 +144,6 @@ type NudgeRow = {
   created_at: string;
 };
 
-type InviteRow = {
-  code: string;
-  inviter_id: string;
-  clique_id: string | null;
-  used_by: string | null;
-  used_at: string | null;
-  expires_at: string;
-  created_at: string;
-};
-
 type PushSubscriptionRow = {
   id: string;
   user_id: string;
@@ -213,7 +202,6 @@ export type Database = {
         [Relationship<'checkin_id', 'checkins'>, Relationship<'sender_id', 'profiles'>]
       >;
       nudges: Table<NudgeRow, Pick<NudgeRow, 'recipient_id'> & Partial<Pick<NudgeRow, 'body'>>>;
-      invites: Table<InviteRow>;
       push_subscriptions: Table<PushSubscriptionRow>;
     };
     Views: Record<never, never>;
@@ -254,8 +242,6 @@ export type Database = {
       invite_to_clique: { Args: { p_clique_id: string; p_user_id: string }; Returns: undefined };
       respond_clique_invite: { Args: { p_clique_id: string; p_accept: boolean }; Returns: undefined };
       leave_clique: { Args: { p_clique_id: string }; Returns: undefined };
-      create_invite: { Args: { p_clique_id?: string | null }; Returns: string };
-      redeem_invite: { Args: { p_code: string }; Returns: string | null };
       save_push_subscription: { Args: { p_subscription: Json }; Returns: undefined };
       delete_my_account: { Args: Record<string, never>; Returns: undefined };
       clique_today: {

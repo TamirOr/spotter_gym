@@ -2,7 +2,7 @@ import { errorMessageKey } from './errors';
 
 describe('errorMessageKey', () => {
   it('maps known server rules to their message', () => {
-    expect(errorMessageKey({ message: 'invalid_invite' })).toBe('errors.invalidInvite');
+    expect(errorMessageKey({ message: 'not_friends' })).toBe('errors.notFriends');
     expect(errorMessageKey({ message: 'clique_full' })).toBe('errors.cliqueFull');
   });
 

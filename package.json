@@ -46,7 +46,8 @@
     "test": "jest",
     "test:db": "supabase/tests/run.sh",
     "gen:types": "supabase gen types typescript --local > src/lib/database.types.ts",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "test:scripts": "node --test scripts/*.test.mjs"
   },
   "private": true,
   "jest": {
@@ -57,7 +58,8 @@
     },
     "testPathIgnorePatterns": [
       "/node_modules/",
-      "/supabase/functions/push-dispatch/"
+      "/supabase/functions/push-dispatch/",
+      "/scripts/"
     ]
   }
 }

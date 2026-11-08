@@ -4,6 +4,7 @@ import { StyleSheet } from 'react-native';
 import { errorMessageKey } from '@/lib/errors';
 
 import { Text } from './Text';
+import { colors } from './theme';
 
 /** Shows a server rule's message, or a generic one. Never the raw error. */
 export function ErrorMessage({ error }: { error: unknown }) {
@@ -17,5 +18,5 @@ export function ErrorMessage({ error }: { error: unknown }) {
 }
 
 const styles = StyleSheet.create({
-  text: { color: '#A3261B' },
+  text: { color: colors.error },
 });

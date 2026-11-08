@@ -10,6 +10,7 @@ export const colors = {
   accent: '#C6F24E',
   inverseMuted: '#B4BBB3',
   scrim: 'rgba(20, 23, 20, 0.45)',
+  error: '#A3261B',
 } as const;
 
 export const fonts = {
