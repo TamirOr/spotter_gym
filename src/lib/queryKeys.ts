@@ -18,6 +18,10 @@ export const queryKeys = {
   cheersToday: ['cheers-today'] as const,
   recentCheckins: (userId: string) => ['recent-checkins', userId] as const,
   cliqueMembers: (cliqueId: string) => ['clique-members', cliqueId] as const,
+  adminUsers: ['admin', 'users'] as const,
+  adminAddedUsers: ['admin', 'added-users'] as const,
+  adminHealth: ['admin', 'health'] as const,
+  adminUserSupport: (userId: string) => ['admin', 'support', userId] as const,
 };
 
 /** Everything a check-in can change: today, boards, goals and the week grid. */

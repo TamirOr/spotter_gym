@@ -107,6 +107,7 @@ export function MeScreen() {
       <View style={styles.links}>
         <ListRow label={t('me.friends')} onPress={() => router.push('/friends')} />
         <ListRow label={t('me.settings')} onPress={() => router.push('/settings')} />
+        {profile?.is_admin ? <ListRow label={t('me.admin')} onPress={() => router.push('/admin')} /> : null}
       </View>
     </Screen>
   );

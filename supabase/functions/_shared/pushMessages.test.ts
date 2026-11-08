@@ -38,6 +38,28 @@ describe('groupNotifications', () => {
 });
 
 describe('pushMessage', () => {
+  it('tells admins how many sign-ups wait, without names', () => {
+    const [one] = groupNotifications([row({ kind: 'signup_pending', group_key: 'signup_pending' })]);
+    expect(pushMessage(one, names)).toEqual({
+      title: 'Spotter',
+      body: 'בקשת הצטרפות חדשה ממתינה',
+      url: '/admin',
+      tag: 'signup_pending',
+    });
+    const [two] = groupNotifications([
+      row({ kind: 'signup_pending', language: 'en', group_key: 'signup_pending' }),
+      row({ kind: 'signup_pending', language: 'en', group_key: 'signup_pending' }),
+    ]);
+    expect(pushMessage(two, names).body).toBe('2 sign-ups are waiting');
+  });
+
+  it('lets an approved user in', () => {
+    const [group] = groupNotifications([
+      row({ kind: 'account_approved', language: 'en', group_key: 'account_approved' }),
+    ]);
+    expect(pushMessage(group, names)).toMatchObject({ body: 'You’re approved. Come on in', url: '/' });
+  });
+
   it('announces a Going in the recipient’s language and opens the cheer sheet', () => {
     const payload = { actor_name: 'יואב', activity_id: 'gym', checkin_id: 'c1' };
     const [hebrew] = groupNotifications([row({ payload })]);

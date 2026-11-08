@@ -4,7 +4,8 @@ A private iPhone app that gets a group of friends to the gym more often. Each pe
 and cheers are visible to the clique. The core loop: **see friends training → tap Going → get cheered on →
 climb the leaderboard**.
 
-Phase 1 (this repository): sign-in and sign-up with a 6-digit email code, profiles, friends, goals, a weekly plan, manual
+Phase 1 (this repository): sign-in and sign-up with a 6-digit email code, admin approval of sign-ups and
+user management, profiles, friends, goals, a weekly plan, manual
 check-ins (Going and Done), cliques, the Today screen and Today bar, the consistency leaderboard, cheers,
 nudges and web push. It ships as a free home-screen web app, so it costs $0 while the group is private.
 

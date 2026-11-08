@@ -13,9 +13,9 @@ const sheet = {
   contentStyle: { backgroundColor: 'transparent' },
 } as const;
 
-/** Sign-in until there is a session, onboarding until set up, then the app. */
+/** Sign-in until there is a session, waiting until approved, onboarding until set up, then the app. */
 export function RootNavigator() {
-  const stage = useAppSession();
+  const { stage, isAdmin } = useAppSession();
   if (stage === 'loading') {
     return (
       <View style={styles.loading}>
@@ -28,6 +28,9 @@ export function RootNavigator() {
     <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }}>
       <Stack.Protected guard={stage === 'signIn'}>
         <Stack.Screen name="sign-in" />
+      </Stack.Protected>
+      <Stack.Protected guard={stage === 'waiting'}>
+        <Stack.Screen name="waiting" />
       </Stack.Protected>
       <Stack.Protected guard={stage === 'onboarding'}>
         <Stack.Screen name="onboarding" />
@@ -50,6 +53,11 @@ export function RootNavigator() {
         <Stack.Screen name="routine/[routineId]" options={sheet} />
         <Stack.Screen name="day/[date]" options={sheet} />
         <Stack.Screen name="clique/new" options={sheet} />
+      </Stack.Protected>
+      <Stack.Protected guard={stage === 'app' && isAdmin}>
+        <Stack.Screen name="admin/index" />
+        <Stack.Screen name="admin/users" />
+        <Stack.Screen name="admin/user/[userId]" />
       </Stack.Protected>
     </Stack>
   );

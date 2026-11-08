@@ -5,7 +5,16 @@
 import { cheerText, NUDGE_EMOJI, type Language, type ReactionType } from './cheers.ts';
 
 export type NotificationKind =
-  'going' | 'done' | 'cheer' | 'friend_invite' | 'clique_invite' | 'plan_reminder' | 'plan_missed' | 'nudge';
+  | 'going'
+  | 'done'
+  | 'cheer'
+  | 'friend_invite'
+  | 'clique_invite'
+  | 'plan_reminder'
+  | 'plan_missed'
+  | 'nudge'
+  | 'signup_pending'
+  | 'account_approved';
 
 /** A row returned by public.claim_due_notifications(). */
 export type ClaimedNotification = {
@@ -184,6 +193,25 @@ export function pushMessage(group: NotificationGroup, names: ActivityNames): Pus
         ),
         url: '/log',
         tag: 'plan_missed',
+      };
+    case 'signup_pending': {
+      const count = group.notifications.length;
+      return {
+        title: APP_NAME,
+        body:
+          count > 1
+            ? pick({ he: `${count} בקשות הצטרפות ממתינות`, en: `${count} sign-ups are waiting` }, language)
+            : pick({ he: 'בקשת הצטרפות חדשה ממתינה', en: 'A new sign-up is waiting' }, language),
+        url: '/admin',
+        tag: 'signup_pending',
+      };
+    }
+    case 'account_approved':
+      return {
+        title: APP_NAME,
+        body: pick({ he: 'הבקשה אושרה. אפשר להיכנס', en: 'You’re approved. Come on in' }, language),
+        url: '/',
+        tag: 'account_approved',
       };
   }
 }
