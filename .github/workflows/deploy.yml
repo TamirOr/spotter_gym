@@ -33,6 +33,8 @@ jobs:
   web:
     needs: functions
     runs-on: ubuntu-latest
+    # Reads its variables and EXPO_TOKEN from the production environment or the repository.
+    environment: production
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
