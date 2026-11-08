@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Spotter: a private Hebrew-first iPhone web app for a clique of friends. See README.md for the layout and
+Spotter: a private Hebrew-first web app for iPhone and Android for a clique of friends. See README.md for the layout and
 docs/setup.md for the platform. Expo-specific guidance is in @AGENTS.md.
 
 ## Principles

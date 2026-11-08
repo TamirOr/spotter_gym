@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 import { useUserId } from '@/features/auth/AuthProvider';
+import { currentInstallGuide } from '@/features/install/browser';
+import { InstallGuide } from '@/features/install/InstallGuide';
 import { useProfile, useUpdateProfile } from '@/features/profile/api';
 import { pickAndUploadAvatar } from '@/features/profile/avatar';
 import { PushToggle } from '@/features/push/PushToggle';
@@ -10,10 +12,12 @@ import { RoutineWizard } from '@/features/routines/RoutineWizard';
 import { useLanguage } from '@/lib/useLanguage';
 import { Avatar, Button, ErrorMessage, Screen, Text, TextField, spacing } from '@/ui';
 
-type Step = 'profile' | 'routines' | 'notifications';
+type Step = 'install' | 'profile' | 'routines' | 'notifications';
 
 /**
- * Name and photo, optional workout routines, then notifications after explaining why.
+ * In the browser, first how to add Spotter to the Home Screen (iPhone needs it for notifications). Then name and
+ * photo, optional workout routines, and notifications after explaining why. Progress is saved on the
+ * server, so opening the Home Screen app picks up from where the browser left off, without the guide.
  * Goals are added later on Me, so skipping routines leads straight on.
  */
 export function OnboardingScreen() {
@@ -22,7 +26,8 @@ export function OnboardingScreen() {
   const userId = useUserId();
   const { data: profile } = useProfile();
   const updateProfile = useUpdateProfile();
-  const [step, setStep] = useState<Step>('profile');
+  const [installGuide] = useState(currentInstallGuide);
+  const [step, setStep] = useState<Step>(installGuide === 'none' ? 'profile' : 'install');
   const [name, setName] = useState<string | null>(null);
   const fullName = name ?? profile?.full_name ?? '';
 
@@ -47,6 +52,10 @@ export function OnboardingScreen() {
 
   return (
     <Screen contentStyle={styles.content}>
+      {step === 'install' && installGuide !== 'none' ? (
+        <InstallGuide guide={installGuide} onContinue={() => setStep('profile')} />
+      ) : null}
+
       {step === 'profile' ? (
         <>
           <Text variant="title" role="heading">

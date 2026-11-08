@@ -1,7 +1,13 @@
 import { base64UrlToBytes, pushSupport } from './pushSupport';
 
 describe('pushSupport', () => {
-  const full = { standalone: true, hasServiceWorker: true, hasPushManager: true, hasNotification: true };
+  const full = {
+    standalone: true,
+    appleMobile: true,
+    hasServiceWorker: true,
+    hasPushManager: true,
+    hasNotification: true,
+  };
 
   it('is available in the installed app', () => {
     expect(pushSupport(full)).toBe('available');
@@ -9,6 +15,11 @@ describe('pushSupport', () => {
 
   it('needs the Home Screen app in Safari', () => {
     expect(pushSupport({ ...full, standalone: false })).toBe('needsInstall');
+  });
+
+  it('works in an Android browser tab, installed or not', () => {
+    expect(pushSupport({ ...full, appleMobile: false, standalone: false })).toBe('available');
+    expect(pushSupport({ ...full, appleMobile: false })).toBe('available');
   });
 
   it('is unsupported on older iPhones', () => {

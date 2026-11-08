@@ -1,22 +1,19 @@
+import { currentDevice, isStandalone } from '@/features/install/device';
+import { isAppleMobile } from '@/features/install/install';
 import type { Json } from '@/lib/database.types';
 import { supabase, unwrap } from '@/lib/supabase';
 
 import { base64UrlToBytes, pushSupport, type PushSupport } from './pushSupport';
 
 // A web app cannot schedule notifications itself, so the server sends every push. On iPhone, web push
-// works only once Spotter is opened from the Home Screen, on iOS 16.4 or later.
-
-/** Opened from the Home Screen. iOS Safari reports it through its own navigator.standalone flag. */
-export function isStandalone(): boolean {
-  if (typeof window === 'undefined') return false;
-  const iosStandalone = (window.navigator as Navigator & { standalone?: boolean }).standalone === true;
-  return iosStandalone || window.matchMedia?.('(display-mode: standalone)').matches === true;
-}
+// works only once Spotter is opened from the Home Screen, on iOS 16.4 or later. Android browsers allow it
+// in a tab too, and the installed app shares the tab's subscription.
 
 export function currentPushSupport(): PushSupport {
   if (typeof window === 'undefined') return 'unsupported';
   return pushSupport({
     standalone: isStandalone(),
+    appleMobile: isAppleMobile(currentDevice()),
     hasServiceWorker: 'serviceWorker' in navigator,
     hasPushManager: 'PushManager' in window,
     hasNotification: 'Notification' in window,

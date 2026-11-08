@@ -1,5 +1,5 @@
 import type { ColorValue, StyleProp, ViewStyle } from 'react-native';
-import Svg, { Circle, Path } from 'react-native-svg';
+import Svg, { Circle, Path, Rect } from 'react-native-svg';
 
 import { colors } from './theme';
 
@@ -27,6 +27,32 @@ const paths = {
     <>
       <Circle cx={12} cy={8} r={4} />
       <Path d="M4.5 21c.7-4 3.7-6.5 7.5-6.5s6.8 2.5 7.5 6.5" />
+    </>
+  ),
+  // Safari's Share button, its Add to Home Screen action and the Open as Web App switch; Chrome's menu.
+  share: (
+    <>
+      <Path d="M12 3v12M8 7l4-4 4 4" />
+      <Path d="M8 10H6.5A1.5 1.5 0 0 0 5 11.5v8A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5v-8a1.5 1.5 0 0 0-1.5-1.5H16" />
+    </>
+  ),
+  addSquare: (
+    <>
+      <Rect x={4} y={4} width={16} height={16} rx={4} />
+      <Path d="M12 8.5v7M8.5 12h7" />
+    </>
+  ),
+  toggle: (
+    <>
+      <Rect x={2.5} y={7} width={19} height={10} rx={5} />
+      <Circle cx={16.5} cy={12} r={2.5} />
+    </>
+  ),
+  menu: (
+    <>
+      <Circle cx={12} cy={5} r={1} />
+      <Circle cx={12} cy={12} r={1} />
+      <Circle cx={12} cy={19} r={1} />
     </>
   ),
 };
