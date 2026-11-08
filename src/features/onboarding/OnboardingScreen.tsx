@@ -7,12 +7,13 @@ import { GoalForm } from '@/features/goals/GoalForm';
 import { useProfile, useUpdateProfile } from '@/features/profile/api';
 import { pickAndUploadAvatar } from '@/features/profile/avatar';
 import { PushToggle } from '@/features/push/PushToggle';
+import { RoutineWizard } from '@/features/routines/RoutineWizard';
 import { useLanguage } from '@/lib/useLanguage';
 import { Avatar, Button, ErrorMessage, Screen, Text, TextField, spacing } from '@/ui';
 
-type Step = 'profile' | 'goal' | 'notifications';
+type Step = 'profile' | 'routines' | 'goal' | 'notifications';
 
-/** Name and photo, a first goal, then notifications after explaining why. Under 2 minutes. */
+/** Name and photo, optional workout routines, a first goal, then notifications after explaining why. */
 export function OnboardingScreen() {
   const { t } = useTranslation();
   const { language } = useLanguage();
@@ -29,7 +30,7 @@ export function OnboardingScreen() {
         id: userId,
         changes: { full_name: fullName.trim(), language, time_zone: Intl.DateTimeFormat().resolvedOptions().timeZone },
       },
-      { onSuccess: () => setStep('goal') },
+      { onSuccess: () => setStep('routines') },
     );
   }
 
@@ -66,6 +67,8 @@ export function OnboardingScreen() {
           />
         </>
       ) : null}
+
+      {step === 'routines' ? <RoutineWizard onDone={() => setStep('goal')} /> : null}
 
       {step === 'goal' ? (
         <>

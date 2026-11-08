@@ -9,8 +9,8 @@ import { useLanguage } from '@/lib/useLanguage';
 import { Button, Chip, ErrorMessage, SegmentedControl, Sheet, Text, spacing } from '@/ui';
 
 import { useAddPlanItem } from './api';
-import { weekdayInitial, weekdayName } from './describeRepeat';
-import { toRRule, WEEKDAYS, weekdayOfDate, type Repeat, type Weekday } from './rrule';
+import { toRRule, weekdayOfDate, type Repeat, type Weekday } from './rrule';
+import { WeekdayPicker } from './WeekdayPicker';
 
 type RepeatChoice = 'once' | 'weekly' | 'biweekly' | 'monthly';
 
@@ -81,17 +81,7 @@ export function PlanEditorSheet() {
       {needsDays ? (
         <>
           <Text variant="label">{t('planEditor.days')}</Text>
-          <View style={styles.chips}>
-            {WEEKDAYS.map((day) => (
-              <Chip
-                key={day}
-                label={weekdayInitial(day, locale)}
-                accessibilityLabel={weekdayName(day, locale)}
-                selected={days.includes(day)}
-                onPress={() => toggleDay(day)}
-              />
-            ))}
-          </View>
+          <WeekdayPicker selected={days} onToggle={toggleDay} />
         </>
       ) : (
         <>

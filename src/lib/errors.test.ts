@@ -4,6 +4,7 @@ describe('errorMessageKey', () => {
   it('maps known server rules to their message', () => {
     expect(errorMessageKey({ message: 'not_friends' })).toBe('errors.notFriends');
     expect(errorMessageKey({ message: 'clique_full' })).toBe('errors.cliqueFull');
+    expect(errorMessageKey({ message: 'routine_days_exceed_times' })).toBe('errors.routineDaysExceedTimes');
   });
 
   it('hides everything else behind a generic message', () => {

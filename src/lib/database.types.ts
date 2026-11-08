@@ -18,6 +18,7 @@ type Enums = {
     'going' | 'done' | 'cheer' | 'friend_invite' | 'clique_invite' | 'plan_reminder' | 'plan_missed' | 'nudge';
   plan_exception_action: 'skip' | 'move';
   reaction_type: 'muscle' | 'fire' | 'clap' | 'trophy' | 'yalla' | 'well_done' | 'champ' | 'note';
+  weekday: 'SU' | 'MO' | 'TU' | 'WE' | 'TH' | 'FR' | 'SA';
 };
 
 type ProfileRow = {
@@ -73,6 +74,20 @@ type PlanItemRow = {
   reminder_lead_min: number | null;
   created_at: string;
   deleted_at: string | null;
+};
+
+type RoutineRow = {
+  id: string;
+  user_id: string;
+  activity_id: string;
+  times_per_week: number;
+  created_at: string;
+};
+
+type RoutineDayRow = {
+  routine_id: string;
+  weekday: Enums['weekday'];
+  name: string | null;
 };
 
 type PlanExceptionRow = {
@@ -186,6 +201,13 @@ export type Database = {
         PlanExceptionRow,
         Pick<PlanExceptionRow, 'plan_item_id' | 'occurs_on' | 'action'> & Partial<Pick<PlanExceptionRow, 'new_date'>>
       >;
+      routines: Table<RoutineRow, Record<string, never>, Record<string, never>>;
+      routine_days: Table<
+        RoutineDayRow,
+        Record<string, never>,
+        Record<string, never>,
+        [Relationship<'routine_id', 'routines'>]
+      >;
       checkins: Table<CheckinRow, Partial<CheckinRow>, Partial<CheckinRow>, [Relationship<'user_id', 'profiles'>]>;
       cliques: Table<CliqueRow, Pick<CliqueRow, 'name'> & Partial<Pick<CliqueRow, 'photo_url' | 'time_zone'>>>;
       clique_members: Table<
@@ -213,6 +235,10 @@ export type Database = {
         Returns: GoalRow;
       };
       remove_plan_item: { Args: { p_plan_item_id: string }; Returns: undefined };
+      save_routine: {
+        Args: { p_routine_id: string | null; p_activity_id: string; p_times_per_week: number; p_days?: Json };
+        Returns: string;
+      };
       mark_going: { Args: { p_checkin_id: string; p_activity_id: string }; Returns: CheckinRow };
       mark_done: {
         Args: {
