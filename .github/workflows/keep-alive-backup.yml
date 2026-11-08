@@ -2,19 +2,10 @@ name: Keep alive and back up
 
 # Free Supabase projects pause after a week without activity and have no automatic backups.
 # Every 3 days this touches the API and stores a database dump in a private repository.
-# Deploy also runs it before applying migrations.
 on:
   schedule:
     - cron: '17 4 */3 * *'
   workflow_dispatch:
-  workflow_call:
-    secrets:
-      SUPABASE_ACCESS_TOKEN:
-        required: true
-      SUPABASE_DB_URL:
-        required: true
-      BACKUP_TOKEN:
-        required: true
 
 permissions:
   contents: read
