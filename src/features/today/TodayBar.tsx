@@ -4,6 +4,9 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { activityLabel } from '@/features/activities/activities';
 import { useActivity } from '@/features/activities/api';
+import { useUserId } from '@/features/auth/AuthProvider';
+import { pickGoingPhoto, useAddGoingPhoto, useGoingPhotos } from '@/features/photos/api';
+import { photoState } from '@/features/photos/photos';
 import { minutesBetween, shortTime } from '@/lib/dates';
 import { useLanguage } from '@/lib/useLanguage';
 import { useNow } from '@/lib/useNow';
@@ -54,11 +57,47 @@ function useBarText(state: TodayBarState): { eyebrow: string; title: string } {
   }
 }
 
+/** While on the way: add one photo for the clique, then see how many opened it. */
+function GoingPhotoLine({ checkinId, addPhoto }: { checkinId: string; addPhoto: ReturnType<typeof useAddGoingPhoto> }) {
+  const { t } = useTranslation();
+  const me = useUserId();
+  const photos = useGoingPhotos();
+  const state = photoState(photos.data, checkinId, me);
+
+  if (state.kind === 'mine') {
+    return (
+      <Text style={styles.photoNote}>
+        {state.views > 0 ? t('todayBar.going.photoViews', { count: state.views }) : t('todayBar.going.photoShared')}
+      </Text>
+    );
+  }
+  if (!photos.data) return null;
+
+  async function onAdd() {
+    const uri = await pickGoingPhoto();
+    if (uri) addPhoto.mutate({ userId: me, checkinId, uri });
+  }
+
+  return (
+    <Pressable
+      accessibilityRole="button"
+      disabled={addPhoto.isPending}
+      onPress={() => void onAdd()}
+      style={styles.secondary}
+    >
+      <Text style={styles.secondaryLabel}>
+        {addPhoto.isPending ? t('common.loading') : t('todayBar.going.addPhoto')}
+      </Text>
+    </Pressable>
+  );
+}
+
 /** Pinned above the tab bar, within thumb reach. Holds the one main action for the user's own workout. */
 export function TodayBar({ state }: { state: TodayBarState }) {
   const { t } = useTranslation();
   const markGoing = useMarkGoing();
   const cancelGoing = useCancelGoing();
+  const addPhoto = useAddGoingPhoto();
   const { eyebrow, title } = useBarText(state);
   const action = mainAction(state);
 
@@ -77,11 +116,12 @@ export function TodayBar({ state }: { state: TodayBarState }) {
 
   return (
     <View style={styles.wrapper}>
-      <ErrorMessage error={markGoing.error ?? cancelGoing.error} />
+      <ErrorMessage error={markGoing.error ?? cancelGoing.error ?? addPhoto.error} />
       <View role="region" aria-label={t('todayBar.a11y')} style={styles.bar}>
         <View style={styles.text}>
           <Text style={styles.eyebrow}>{eyebrow}</Text>
           <Text style={styles.title}>{title}</Text>
+          {state.kind === 'going' ? <GoingPhotoLine checkinId={state.checkinId} addPhoto={addPhoto} /> : null}
           {state.kind === 'goingExpired' ? (
             <Pressable accessibilityRole="button" onPress={() => cancelGoing.mutate()} style={styles.secondary}>
               <Text style={styles.secondaryLabel}>{t('todayBar.expired.didNotHappen')}</Text>
@@ -122,5 +162,6 @@ const styles = StyleSheet.create({
     color: colors.background,
     textDecorationLine: 'underline',
   },
+  photoNote: { marginTop: 4, fontFamily: fonts.regular, fontSize: 13, color: colors.inverseMuted },
   action: { minWidth: 92 },
 });

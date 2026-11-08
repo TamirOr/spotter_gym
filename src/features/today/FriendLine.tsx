@@ -4,6 +4,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { activityLabel } from '@/features/activities/activities';
 import { useActivity } from '@/features/activities/api';
+import type { PhotoState } from '@/features/photos/photos';
 import { shortTime } from '@/lib/dates';
 import { useLanguage } from '@/lib/useLanguage';
 import { Avatar, Icon, Text, colors, fonts, TOUCH_TARGET } from '@/ui';
@@ -33,7 +34,7 @@ function useStatusText(friend: FriendLineData): string {
 }
 
 /** One line per friend: photo, name, short status, and one quick action. Everything else is on their profile. */
-export function FriendLine({ friend }: { friend: FriendLineData }) {
+export function FriendLine({ friend, photo }: { friend: FriendLineData; photo: PhotoState }) {
   const { t } = useTranslation();
   const training = friend.status === 'training';
   const status = useStatusText(friend);
@@ -58,6 +59,18 @@ export function FriendLine({ friend }: { friend: FriendLineData }) {
           </View>
         </View>
       </Pressable>
+
+      {/* An unopened Going photo leads to the cheer sheet, where it is opened once, even after cheering. */}
+      {photo.kind === 'new' && friend.checkin_id ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t('today.photoA11y', { name: friend.full_name })}
+          onPress={() => router.push(`/cheer/${friend.checkin_id}`)}
+          style={styles.action}
+        >
+          <Text style={[styles.pill, styles.pillOutline]}>{t('today.photo')}</Text>
+        </Pressable>
+      ) : null}
 
       {training && friend.checkin_id ? (
         <Pressable

@@ -6,8 +6,8 @@ climb the leaderboard**.
 
 Phase 1 (this repository): sign-in and sign-up with a 6-digit email code, admin approval of sign-ups and
 user management, profiles, friends, goals, a weekly plan, manual
-check-ins (Going and Done), cliques, the Today screen and Today bar, the consistency leaderboard, cheers,
-nudges and web push. It ships as a free home-screen web app, so it costs $0 while the group is private.
+check-ins (Going and Done), one-time Going photos, cliques, the Today screen and Today bar, the consistency
+leaderboard, cheers, nudges and web push. It ships as a free home-screen web app, so it costs $0 while the group is private.
 
 ## Stack
 
@@ -16,6 +16,7 @@ nudges and web push. It ships as a free home-screen web app, so it costs $0 whil
 | App     | Expo SDK 58, Expo Router, React Query, i18next (Hebrew first, RTL)          | `src/`                         |
 | Backend | Supabase: Postgres with RLS, RPCs and triggers; Auth with email codes       | `supabase/migrations/`         |
 | Push    | Standard Web Push from the `push-dispatch` Edge Function, driven by pg_cron | `supabase/functions/`          |
+| Photos  | Private Storage bucket; `photo-sweep` Edge Function deletes seen photos     | `supabase/functions/`          |
 | Hosting | Expo Hosting (web export)                                                   | `.github/workflows/deploy.yml` |
 
 ## Layout
@@ -29,7 +30,7 @@ src/
   lib/            Supabase client, generated database types, query keys, dates, errors.
 supabase/
   migrations/     Schema, privacy rules, business rules, read models, notifications, platform wiring.
-  functions/      push-dispatch (Deno) and _shared/ code that the app and the function both use.
+  functions/      push-dispatch and photo-sweep (Deno), and _shared/ code that the app and functions use.
   tests/          SQL tests that run on plain Postgres with a stub of the Supabase auth schema.
 public/           PWA shell: index.html, manifest, service worker, icons.
 ```

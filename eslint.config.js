@@ -6,6 +6,6 @@ module.exports = defineConfig([
   expoConfig,
   {
     // Deno code resolves npm: specifiers itself.
-    ignores: ['dist/*', 'supabase/functions/push-dispatch/*'],
+    ignores: ['dist/*', 'supabase/functions/push-dispatch/*', 'supabase/functions/photo-sweep/*'],
   },
 ]);

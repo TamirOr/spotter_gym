@@ -16,6 +16,7 @@ export const queryKeys = {
   profileSearch: (query: string) => ['profile-search', query] as const,
   person: (userId: string) => ['person', userId] as const,
   cheersToday: ['cheers-today'] as const,
+  goingPhotos: ['going-photos'] as const,
   recentCheckins: (userId: string) => ['recent-checkins', userId] as const,
   cliqueMembers: (cliqueId: string) => ['clique-members', cliqueId] as const,
   adminUsers: ['admin', 'users'] as const,
@@ -24,7 +25,7 @@ export const queryKeys = {
   adminUserSupport: (userId: string) => ['admin', 'support', userId] as const,
 };
 
-/** Everything a check-in can change: today, boards, goals and the week grid. */
+/** Everything a check-in can change: today, boards, goals, the week grid and which photos are open. */
 export const workoutQueries = [
   queryKeys.myToday,
   ['clique-today'],
@@ -32,4 +33,5 @@ export const workoutQueries = [
   ['goals'],
   ['week'],
   queryKeys.activityUsage,
+  queryKeys.goingPhotos,
 ] as const;

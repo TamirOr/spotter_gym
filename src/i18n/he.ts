@@ -40,6 +40,8 @@ export const he = {
     cheerSentA11y: 'נשלח עידוד אל {{name}}',
     nudgeA11y: 'לדרבן את {{name}}',
     nudgeSentA11y: 'נשלח דרבון אל {{name}}',
+    photo: '📸',
+    photoA11y: 'פתיחת התמונה של {{name}}',
     weekProgress: '{{completed}} מתוך {{planned}} אימונים השבוע',
     noPlanThisWeek: 'אין עדיין תוכנית לשבוע',
     rank: 'מקום {{rank}}',
@@ -68,6 +70,9 @@ export const he = {
     going: {
       eyebrow: 'בדרך לאימון',
       title: '{{activity}}, {{minutes}} דקות',
+      addPhoto: '📸 הוספת תמונה לקליקה',
+      photoShared: '📸 התמונה נשלחה לקליקה',
+      photoViews: '📸 צפיות בתמונה: {{count}}',
     },
     expired: {
       eyebrow: 'האימון קרה?',
@@ -99,6 +104,10 @@ export const he = {
     noteLabel: 'או הודעה אישית',
     notePlaceholder: 'מה בא לך לכתוב?',
     closed: 'האימון הזה כבר לא פתוח לעידודים',
+    photoOpen: '📸 פתיחת התמונה',
+    photoOnce: 'אפשר לראות את התמונה פעם אחת בלבד. היא נעלמת עם הסגירה.',
+    photoSeen: 'התמונה כבר נצפתה',
+    photoAlt: 'התמונה של {{name}}',
   },
   nudge: {
     title: 'לדרבן את {{name}}',
@@ -478,6 +487,8 @@ export const he = {
     cliqueFull: 'בקליקה כבר 20 חברים',
     notFriends: 'אפשר להזמין רק חברים',
     outsideLoggingWindow: 'אפשר לרשום אימון עד 48 שעות אחורה',
+    photoAlreadySeen: 'את התמונה הזאת אפשר לראות רק פעם אחת',
+    photoUnavailable: 'התמונה כבר לא זמינה',
     routineDaysExceedTimes: 'נבחרו יותר ימים מאימונים בשבוע',
   },
 };

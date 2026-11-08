@@ -1,6 +1,6 @@
 # Deploys everything from GitHub:
 #
-#   Merge to main -> tests -> waits for your approval -> database -> Edge Function
+#   Merge to main -> tests -> waits for your approval -> database -> Edge Functions
 #                    -> web app -> check the site 2 minutes later
 #   Run workflow  -> the same
 #
@@ -53,6 +53,7 @@ jobs:
         with:
           version: latest
       - run: supabase functions deploy push-dispatch --no-verify-jwt --project-ref "$SUPABASE_PROJECT_REF" --yes
+      - run: supabase functions deploy photo-sweep --no-verify-jwt --project-ref "$SUPABASE_PROJECT_REF" --yes
 
   # Waits for the database and function, so the new web build never meets an old schema.
   web:
