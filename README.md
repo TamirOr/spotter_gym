@@ -1,6 +1,6 @@
 # Spotter
 
-A private iPhone app that gets a group of friends to the gym more often. Each person's plan, follow-through
+A private iPhone and Android app that gets a group of friends to the gym more often. Each person's plan, follow-through
 and cheers are visible to the clique. The core loop: **see friends training → tap Going → get cheered on →
 climb the leaderboard**.
 

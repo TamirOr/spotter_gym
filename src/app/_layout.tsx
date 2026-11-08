@@ -10,6 +10,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { AdminViewProvider } from '@/features/admin/AdminViewProvider';
 import { AuthProvider } from '@/features/auth/AuthProvider';
+import { listenForInstallPrompt } from '@/features/install/browser';
 import { RootNavigator } from '@/features/navigation/RootNavigator';
 import { initI18n } from '@/i18n';
 import { queryClient } from '@/lib/queryClient';
@@ -17,6 +18,7 @@ import { useLanguage } from '@/lib/useLanguage';
 import { appDirection } from '@/ui';
 
 initI18n();
+listenForInstallPrompt();
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({ Heebo_400Regular, Heebo_500Medium, Heebo_600SemiBold, Heebo_700Bold });

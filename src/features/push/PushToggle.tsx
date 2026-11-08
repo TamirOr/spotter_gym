@@ -11,9 +11,9 @@ export function PushToggle({ label, onDone }: { label?: string; onDone?: (enable
   const [enabled, setEnabled] = useState(notificationsGranted);
   const [busy, setBusy] = useState(false);
 
-  if (currentPushSupport() !== 'available') {
-    return <Text variant="small">{t('onboarding.notificationsUnavailable')}</Text>;
-  }
+  const support = currentPushSupport();
+  if (support === 'needsInstall') return <Text variant="small">{t('onboarding.notificationsUnavailable')}</Text>;
+  if (support === 'unsupported') return <Text variant="small">{t('onboarding.notificationsUnsupported')}</Text>;
   if (enabled) return <Text variant="small">{t('settings.pushOn')}</Text>;
 
   async function enable() {

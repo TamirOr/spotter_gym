@@ -4,6 +4,8 @@ export type PushSupport = 'available' | 'needsInstall' | 'unsupported';
 
 type PushEnvironment = {
   standalone: boolean;
+  /** iPhone or iPad, where push needs the Home Screen app. */
+  appleMobile: boolean;
   hasServiceWorker: boolean;
   hasPushManager: boolean;
   hasNotification: boolean;
@@ -11,7 +13,7 @@ type PushEnvironment = {
 
 export function pushSupport(environment: PushEnvironment): PushSupport {
   if (!environment.hasServiceWorker || !environment.hasNotification) return 'unsupported';
-  if (!environment.standalone) return 'needsInstall';
+  if (environment.appleMobile && !environment.standalone) return 'needsInstall';
   return environment.hasPushManager ? 'available' : 'unsupported';
 }
 

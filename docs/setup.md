@@ -73,7 +73,8 @@ cannot be deleted from the app.
 
 3. Put the public key in `EXPO_PUBLIC_VAPID_PUBLIC_KEY` for the web build.
 
-Web push on iPhone needs iOS 16.4+ and the app opened from the Home Screen.
+Web push on iPhone needs iOS 16.4+ and the app opened from the Home Screen. On Android it works in the
+browser too, and Chrome offers its own install dialog, which onboarding opens from a button.
 
 ## 4. Hosting and GitHub
 
