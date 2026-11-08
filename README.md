@@ -4,7 +4,7 @@ A private iPhone app that gets a group of friends to the gym more often. Each pe
 and cheers are visible to the clique. The core loop: **see friends training → tap Going → get cheered on →
 climb the leaderboard**.
 
-Phase 1 (this repository): sign-in with invite codes, profiles, friends, goals, a weekly plan, manual
+Phase 1 (this repository): sign-in and sign-up with a 6-digit email code, profiles, friends, goals, a weekly plan, manual
 check-ins (Going and Done), cliques, the Today screen and Today bar, the consistency leaderboard, cheers,
 nudges and web push. It ships as a free home-screen web app, so it costs $0 while the group is private.
 
@@ -13,7 +13,7 @@ nudges and web push. It ships as a free home-screen web app, so it costs $0 whil
 | Part    | What                                                                        | Where                          |
 | ------- | --------------------------------------------------------------------------- | ------------------------------ |
 | App     | Expo SDK 58, Expo Router, React Query, i18next (Hebrew first, RTL)          | `src/`                         |
-| Backend | Supabase: Postgres with RLS, RPCs and triggers; Auth with Google            | `supabase/migrations/`         |
+| Backend | Supabase: Postgres with RLS, RPCs and triggers; Auth with email codes       | `supabase/migrations/`         |
 | Push    | Standard Web Push from the `push-dispatch` Edge Function, driven by pg_cron | `supabase/functions/`          |
 | Hosting | Expo Hosting (web export)                                                   | `.github/workflows/deploy.yml` |
 
@@ -51,4 +51,4 @@ SQL tests need Postgres 15+ with `pg_trgm`:
 PGHOST=localhost PGPORT=5432 PGUSER=postgres npm run test:db
 ```
 
-Setting up Supabase, Google sign-in, web push and hosting: [docs/setup.md](docs/setup.md).
+Setting up Supabase, email-code sign-in, web push and hosting: [docs/setup.md](docs/setup.md).

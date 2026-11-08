@@ -21,13 +21,27 @@ service instead of creating a bill.
    select vault.create_secret('<random secret>', 'push_dispatch_secret');
    ```
 
-## 2. Google sign-in
+## 2. Email-code sign-in
 
-1. In Google Cloud, create an OAuth client of type _Web application_. Add
-   `https://<ref>.supabase.co/auth/v1/callback` as an authorized redirect URI.
-2. In Supabase, Authentication → Providers → Google: paste the client id and secret.
-3. Authentication → URL Configuration: set the site URL to the hosted app's address, and add it to the
-   redirect allow list.
+Friends sign in and sign up the same way: they type their email and get a 6-digit code. The Database
+workflow sets this up. For the email to carry the code, Supabase needs your own mail sender (the free
+plan allows a custom email template only with one). Gmail is the simplest:
+
+1. On a Gmail account with 2-Step Verification on, open https://myaccount.google.com/apppasswords and
+   create an app password named `spotter`. Copy the 16 characters.
+2. Add these GitHub secrets (Settings → Secrets and variables → Actions):
+
+   | Secret        | Value             |
+   | ------------- | ----------------- |
+   | `SMTP_HOST`   | `smtp.gmail.com`  |
+   | `SMTP_PORT`   | `587`             |
+   | `SMTP_USER`   | the Gmail address |
+   | `SMTP_PASS`   | the app password  |
+   | `SMTP_SENDER` | the Gmail address |
+
+3. Run Actions → Database → Run workflow.
+
+Once the app has its address, add it as the GitHub variable `SITE_URL` and run the workflow again.
 
 ## 3. Web push
 
@@ -54,6 +68,7 @@ Create a free Expo account and an access token. In the GitHub repository, add an
 | Variable | `EXPO_PUBLIC_SUPABASE_URL`             | project URL                                                        |
 | Variable | `EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | publishable key                                                    |
 | Variable | `EXPO_PUBLIC_VAPID_PUBLIC_KEY`         | VAPID public key                                                   |
+| Variable | `SITE_URL`                             | the app's address, once deployed                                   |
 | Variable | `BACKUP_REPOSITORY`                    | `owner/name` of a **private** repository for backups               |
 | Secret   | `SUPABASE_ACCESS_TOKEN`                | Supabase personal access token                                     |
 | Secret   | `SUPABASE_DB_PASSWORD`                 | database password                                                  |
@@ -63,13 +78,3 @@ Create a free Expo account and an access token. In the GitHub repository, add an
 
 Pushing to `main` deploys the database, the Edge Function and then the web app. Every 3 days a scheduled job
 touches the API, so the free project does not pause, and stores a dump in the backup repository.
-
-## 5. The first invite
-
-Sign-up is invite-only. Bootstrap the first user once, from the SQL editor, after they sign in with Google:
-
-```sql
-update public.profiles set joined_at = now() where email = '<your google email>';
-```
-
-From then on, invite friends from the Clique tab.
