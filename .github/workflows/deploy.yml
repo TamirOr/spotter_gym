@@ -1,8 +1,8 @@
 # Deploys everything from GitHub:
 #
-#   Merge to main -> tests -> waits for your approval -> backup -> database
-#                    -> Edge Function -> web app -> check the site 2 minutes later
-#   Run workflow  -> the same, with an option to skip the backup
+#   Merge to main -> tests -> waits for your approval -> database -> Edge Function
+#                    -> web app -> check the site 2 minutes later
+#   Run workflow  -> the same
 #
 # The "approve" job carries the production GitHub environment, which requires your approval
 # (Settings → Environments → production → Required reviewers). To approve: open the run under
@@ -13,11 +13,6 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-    inputs:
-      skip_backup:
-        description: 'Skip the backup before migrations (emergencies)'
-        type: boolean
-        default: false
 
 permissions:
   contents: read
@@ -42,24 +37,13 @@ jobs:
     steps:
       - run: echo "Deploying $GITHUB_SHA to production"
 
-  backup:
-    needs: approve
-    if: ${{ !inputs.skip_backup }}
-    uses: ./.github/workflows/keep-alive-backup.yml
-    secrets: inherit
-
-  # Runs once approved, when the backup succeeded or was skipped on purpose.
   database:
-    needs: [approve, backup]
-    if: >-
-      always() && needs.approve.result == 'success'
-      && (needs.backup.result == 'success' || needs.backup.result == 'skipped')
+    needs: approve
     uses: ./.github/workflows/database.yml
     secrets: inherit
 
   functions:
     needs: database
-    if: always() && needs.database.result == 'success'
     runs-on: ubuntu-latest
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
@@ -73,7 +57,6 @@ jobs:
   # Waits for the database and function, so the new web build never meets an old schema.
   web:
     needs: functions
-    if: always() && needs.functions.result == 'success'
     runs-on: ubuntu-latest
     env:
       EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
@@ -107,7 +90,6 @@ jobs:
   # The site and the API must still answer once the new build has been live for a while.
   verify:
     needs: web
-    if: always() && needs.web.result == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

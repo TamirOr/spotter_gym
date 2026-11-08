@@ -80,13 +80,12 @@ backup repository.
 
 ## 5. Deploying
 
-Merging to `main` starts **Deploy**: the CI suite runs, then the run waits for your approval, then it backs up
-the database, applies migrations, deploys the Edge Function, publishes the web app and checks the site two
-minutes later. A newer merge replaces a run still waiting for approval, so approving always ships the latest
+Merging to `main` starts **Deploy**: the CI suite runs, then the run waits for your approval, then it applies
+migrations, deploys the Edge Function, publishes the web app and checks the site two minutes later. A newer merge replaces a run still waiting for approval, so approving always ships the latest
 `main`.
 
 One-time setup: Settings → Environments → New environment `production` → Required reviewers → add yourself.
 Without a required reviewer the run does not wait. To approve a run: Actions → the Deploy run → Review
 deployments → Approve and deploy.
 
-To deploy by hand, run **Deploy** from the Actions tab. Its "Skip the backup" option is for emergencies only.
+To deploy by hand, run **Deploy** from the Actions tab.
