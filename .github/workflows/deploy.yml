@@ -33,38 +33,32 @@ jobs:
   web:
     needs: functions
     runs-on: ubuntu-latest
-    # Reads its variables and EXPO_TOKEN from the production environment or the repository.
-    environment: production
+    env:
+      SUPABASE_PROJECT_REF: rzfcjlzesuwrbaejfgyo
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-      # An empty setting would publish an app that fails on open, so stop and name what is missing.
-      - name: Check the deploy settings
-        env:
-          EXPO_PUBLIC_SUPABASE_URL: ${{ vars.EXPO_PUBLIC_SUPABASE_URL }}
-          EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ vars.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+      - name: Check the Expo token
         run: |
-          missing=0
-          for name in EXPO_PUBLIC_SUPABASE_URL EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY EXPO_TOKEN; do
-            if [ -z "${!name}" ]; then echo "::error::$name is not set"; missing=1; fi
-          done
-          exit "$missing"
+          if [ -z "$EXPO_TOKEN" ]; then
+            echo "::error::Add the repository secret EXPO_TOKEN (expo.dev → Account settings → Access tokens)"
+            exit 1
+          fi
+      # The app's Supabase address and public key come from the project, so they need no GitHub variables.
+      - uses: ./.github/actions/supabase-public-config
+        with:
+          project-ref: ${{ env.SUPABASE_PROJECT_REF }}
+          access-token: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
       - run: npm ci
       - run: npm run build
         env:
-          EXPO_PUBLIC_SUPABASE_URL: ${{ vars.EXPO_PUBLIC_SUPABASE_URL }}
-          EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ vars.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
           EXPO_PUBLIC_VAPID_PUBLIC_KEY: ${{ vars.EXPO_PUBLIC_VAPID_PUBLIC_KEY }}
       # Links the build to the Expo project named by app.json's slug, creating it on the first run.
       - name: Link the Expo project
         run: npx eas-cli@latest init --force --non-interactive
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
       - name: Publish to Expo Hosting
         run: npx eas-cli@latest deploy --prod --non-interactive
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}

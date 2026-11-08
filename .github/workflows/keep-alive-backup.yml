@@ -13,13 +13,17 @@ permissions:
 jobs:
   backup:
     runs-on: ubuntu-latest
-    environment: production
     steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/supabase-public-config
+        with:
+          project-ref: rzfcjlzesuwrbaejfgyo
+          access-token: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
       - name: Touch the API
         run: |
           curl --fail --silent --show-error --output /dev/null \
-            "${{ vars.EXPO_PUBLIC_SUPABASE_URL }}/rest/v1/activities?select=id&limit=1" \
-            -H "apikey: ${{ vars.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}"
+            "$EXPO_PUBLIC_SUPABASE_URL/rest/v1/activities?select=id&limit=1" \
+            -H "apikey: $EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY"
 
       - uses: supabase/setup-cli@v1
         with:

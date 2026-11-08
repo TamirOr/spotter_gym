@@ -60,21 +60,20 @@ Web push on iPhone needs iOS 16.4+ and the app opened from the Home Screen.
 
 ## 4. Hosting and GitHub
 
-Create a free Expo account and an access token. In the GitHub repository, add an environment called
-`production` with:
+Create a free Expo account and an access token. In the GitHub repository, add these under Settings →
+Secrets and variables → Actions. The app's Supabase address and public key are read from the project,
+so they need no setting.
 
-| Kind     | Name                                   | Value                                                              |
-| -------- | -------------------------------------- | ------------------------------------------------------------------ |
-| Variable | `EXPO_PUBLIC_SUPABASE_URL`             | project URL                                                        |
-| Variable | `EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | publishable key                                                    |
-| Variable | `EXPO_PUBLIC_VAPID_PUBLIC_KEY`         | VAPID public key                                                   |
-| Variable | `SITE_URL`                             | the app's address, once deployed                                   |
-| Variable | `BACKUP_REPOSITORY`                    | `owner/name` of a **private** repository for backups               |
-| Secret   | `SUPABASE_ACCESS_TOKEN`                | Supabase personal access token                                     |
-| Secret   | `SUPABASE_DB_PASSWORD`                 | database password                                                  |
-| Secret   | `SUPABASE_DB_URL`                      | session pooler connection string                                   |
-| Secret   | `EXPO_TOKEN`                           | Expo access token                                                  |
-| Secret   | `BACKUP_TOKEN`                         | fine-grained token with write access to the backup repository only |
+| Kind     | Name                           | Value                                                              |
+| -------- | ------------------------------ | ------------------------------------------------------------------ |
+| Variable | `EXPO_PUBLIC_VAPID_PUBLIC_KEY` | VAPID public key                                                   |
+| Variable | `SITE_URL`                     | the app's address, once deployed                                   |
+| Variable | `BACKUP_REPOSITORY`            | `owner/name` of a **private** repository for backups               |
+| Secret   | `SUPABASE_ACCESS_TOKEN`        | Supabase personal access token                                     |
+| Secret   | `SUPABASE_DB_PASSWORD`         | database password                                                  |
+| Secret   | `SUPABASE_DB_URL`              | session pooler connection string                                   |
+| Secret   | `EXPO_TOKEN`                   | Expo access token                                                  |
+| Secret   | `BACKUP_TOKEN`                 | fine-grained token with write access to the backup repository only |
 
 Pushing to `main` deploys the database, the Edge Function and then the web app. Every 3 days a scheduled job
 touches the API, so the free project does not pause, and stores a dump in the backup repository.

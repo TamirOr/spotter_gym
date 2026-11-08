@@ -1,0 +1,27 @@
+name: Supabase public config
+description: >-
+  Reads the project's address and publishable key from the Supabase Management API and exports them
+  as EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY. Both are public: they ship
+  inside the web app.
+inputs:
+  project-ref:
+    description: The Supabase project ref
+    required: true
+  access-token:
+    description: A Supabase personal access token
+    required: true
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      env:
+        SUPABASE_PROJECT_REF: ${{ inputs.project-ref }}
+        SUPABASE_ACCESS_TOKEN: ${{ inputs.access-token }}
+      run: |
+        key=$(curl --fail --silent --show-error \
+          -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" \
+          "https://api.supabase.com/v1/projects/$SUPABASE_PROJECT_REF/api-keys" \
+          | jq -r 'first(.[] | select(.type == "publishable")) // first(.[] | select(.name == "anon")) | .api_key // empty')
+        if [ -z "$key" ]; then echo "::error::The project has no publishable key"; exit 1; fi
+        echo "EXPO_PUBLIC_SUPABASE_URL=https://$SUPABASE_PROJECT_REF.supabase.co" >> "$GITHUB_ENV"
+        echo "EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$key" >> "$GITHUB_ENV"
