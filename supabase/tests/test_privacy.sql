@@ -38,7 +38,6 @@ select test.eq((select count(*) from public.checkins)::integer, 0, 'strangers se
 
 -- should fail
 select test.fails($$select email from public.profiles$$, 'permission denied', 'nobody reads emails through the table');
-select test.fails($$update public.profiles set joined_at = now()$$, 'permission denied', 'nobody joins without an invite');
 select test.fails($$update public.profiles set email = 'x@example.com'$$, 'permission denied', 'email is not editable');
 select test.fails($$select * from public.notifications$$, 'permission denied', 'the outbox is server-only');
 select test.fails($$select public.claim_due_notifications()$$, 'permission denied', 'only the server dispatches pushes');

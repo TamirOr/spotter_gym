@@ -5,20 +5,13 @@ grant execute on all functions in schema public to service_role;
 create schema test;
 grant usage on schema test to anon, authenticated, service_role;
 
--- A signed-up user. Joined users have redeemed an invite.
-create function test.user(p_name text, p_joined boolean default true) returns uuid
-language plpgsql as $$
-declare
-  v_id uuid;
-begin
+-- A signed-up user. Signing up creates the profile.
+create function test.user(p_name text) returns uuid
+language sql as $$
   insert into auth.users (email, raw_user_meta_data)
   values (lower(p_name) || '@example.com', jsonb_build_object('full_name', p_name))
-  returning id into v_id;
-  if p_joined then
-    update public.profiles set joined_at = now() where id = v_id;
-  end if;
-  return v_id;
-end $$;
+  returning id
+$$;
 
 create function test.befriend(p_a uuid, p_b uuid) returns void
 language sql as $$
