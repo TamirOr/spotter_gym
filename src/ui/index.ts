@@ -13,4 +13,5 @@ export { Sheet } from './Sheet';
 export { Text, type TextVariant } from './Text';
 export { TextField } from './TextField';
 export { ToggleRow } from './ToggleRow';
+export { appDirection } from './direction';
 export { colors, fonts, radii, spacing, TOUCH_TARGET } from './theme';
