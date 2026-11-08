@@ -1,6 +1,14 @@
+# Deploys everything from GitHub:
+#
+#   Merge to main -> tests -> waits for your approval -> database -> Edge Function
+#                    -> web app -> check the site 2 minutes later
+#   Run workflow  -> the same
+#
+# The "approve" job carries the production GitHub environment, which requires your approval
+# (Settings → Environments → production → Required reviewers). To approve: open the run under
+# Actions and press "Review deployments".
 name: Deploy
 
-# main is production: database first, so the new web build never meets an old schema.
 on:
   push:
     branches: [main]
@@ -9,12 +17,28 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: deploy
-  cancel-in-progress: false
+env:
+  # The project ref is an identifier, not a secret.
+  SUPABASE_PROJECT_REF: rzfcjlzesuwrbaejfgyo
 
 jobs:
+  # The whole CI suite on the commit being deployed. Nothing deploys unless it passes.
+  test:
+    uses: ./.github/workflows/ci.yml
+
+  approve:
+    needs: test
+    runs-on: ubuntu-latest
+    environment: production
+    # A newer run replaces one still waiting for approval, so approving always deploys the latest main.
+    concurrency:
+      group: approve-production
+      cancel-in-progress: true
+    steps:
+      - run: echo "Deploying $GITHUB_SHA to production"
+
   database:
+    needs: approve
     uses: ./.github/workflows/database.yml
     secrets: inherit
 
@@ -28,13 +52,13 @@ jobs:
       - uses: supabase/setup-cli@v1
         with:
           version: latest
-      - run: supabase functions deploy push-dispatch --no-verify-jwt --remote=rzfcjlzesuwrbaejfgyo --yes
+      - run: supabase functions deploy push-dispatch --no-verify-jwt --project-ref "$SUPABASE_PROJECT_REF" --yes
 
+  # Waits for the database and function, so the new web build never meets an old schema.
   web:
     needs: functions
     runs-on: ubuntu-latest
     env:
-      SUPABASE_PROJECT_REF: rzfcjlzesuwrbaejfgyo
       EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
     steps:
       - uses: actions/checkout@v4
@@ -62,3 +86,29 @@ jobs:
         run: npx eas-cli@latest init --force --non-interactive
       - name: Publish to Expo Hosting
         run: npx eas-cli@latest deploy --prod --non-interactive
+
+  # The site and the API must still answer once the new build has been live for a while.
+  verify:
+    needs: web
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/supabase-public-config
+        with:
+          project-ref: ${{ env.SUPABASE_PROJECT_REF }}
+          access-token: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      - run: sleep 120
+      - name: Check the API
+        run: |
+          curl --fail --silent --show-error --output /dev/null \
+            "$EXPO_PUBLIC_SUPABASE_URL/rest/v1/activities?select=id&limit=1" \
+            -H "apikey: $EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY"
+      - name: Check the site
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+        run: |
+          if [ -z "$SITE_URL" ]; then
+            echo "::notice title=Site check skipped::Set the repository variable SITE_URL to check the site after each deploy"
+            exit 0
+          fi
+          curl --fail --silent --show-error --location --output /dev/null "$SITE_URL"

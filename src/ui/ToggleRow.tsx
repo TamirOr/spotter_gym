@@ -3,6 +3,10 @@ import { StyleSheet, Switch, View } from 'react-native';
 import { Text } from './Text';
 import { colors } from './theme';
 
+// React Native Web colors the "on" thumb only from `activeThumbColor` and falls back to teal without it.
+// React Native's types do not list that web-only prop.
+const ON_THUMB_COLOR: object = { activeThumbColor: colors.background };
+
 type Props = { label: string; value: boolean; onChange: (value: boolean) => void };
 
 export function ToggleRow({ label, value, onChange }: Props) {
@@ -17,6 +21,7 @@ export function ToggleRow({ label, value, onChange }: Props) {
         onValueChange={onChange}
         trackColor={{ true: colors.ink, false: colors.track }}
         thumbColor={colors.background}
+        {...ON_THUMB_COLOR}
       />
     </View>
   );

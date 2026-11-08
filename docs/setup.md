@@ -92,5 +92,17 @@ so they need no setting.
 | Secret   | `EXPO_TOKEN`                   | Expo access token                                                  |
 | Secret   | `BACKUP_TOKEN`                 | fine-grained token with write access to the backup repository only |
 
-Pushing to `main` deploys the database, the Edge Function and then the web app. Every 3 days a scheduled job
-touches the API, so the free project does not pause, and stores a dump in the backup repository.
+Every 3 days a scheduled job touches the API, so the free project does not pause, and stores a dump in the
+backup repository.
+
+## 5. Deploying
+
+Merging to `main` starts **Deploy**: the CI suite runs, then the run waits for your approval, then it applies
+migrations, deploys the Edge Function, publishes the web app and checks the site two minutes later. A newer merge replaces a run still waiting for approval, so approving always ships the latest
+`main`.
+
+One-time setup: Settings → Environments → New environment `production` → Required reviewers → add yourself.
+Without a required reviewer the run does not wait. To approve a run: Actions → the Deploy run → Review
+deployments → Approve and deploy.
+
+To deploy by hand, run **Deploy** from the Actions tab.

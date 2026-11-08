@@ -23,8 +23,13 @@ export function deviceLanguage(): Language {
   return getLocales()[0]?.languageCode === 'en' ? 'en' : 'he';
 }
 
+/** Hebrew reads right to left. */
+export function directionOf(language: Language): 'rtl' | 'ltr' {
+  return language === 'he' ? 'rtl' : 'ltr';
+}
+
 function applyDirection(language: Language): void {
-  const rtl = language === 'he';
+  const rtl = directionOf(language) === 'rtl';
   if (Platform.OS === 'web') {
     // React Native Web lays rows out by the document direction, so flipping it flips every screen.
     document.documentElement.dir = rtl ? 'rtl' : 'ltr';
