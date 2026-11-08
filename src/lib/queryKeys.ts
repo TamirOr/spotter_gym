@@ -11,6 +11,7 @@ export const queryKeys = {
   goals: (cliqueId: string | null) => ['goals', cliqueId ?? 'mine'] as const,
   week: (weekStart: string) => ['week', weekStart] as const,
   planItems: ['plan-items'] as const,
+  routines: ['routines'] as const,
   friendships: ['friendships'] as const,
   profileSearch: (query: string) => ['profile-search', query] as const,
   person: (userId: string) => ['person', userId] as const,

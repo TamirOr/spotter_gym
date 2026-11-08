@@ -8,11 +8,21 @@ import { useGoalProgress } from '@/features/goals/api';
 import { GoalRow } from '@/features/goals/GoalRow';
 import { useWeek } from '@/features/plan/api';
 import { useProfile } from '@/features/profile/api';
+import { useRoutines } from '@/features/routines/api';
+import { RoutineRow } from '@/features/routines/RoutineRow';
 import { formatWeekdayInitial, localToday, weekStart } from '@/lib/dates';
 import { useLanguage } from '@/lib/useLanguage';
 import { Avatar, Button, Icon, ListRow, Screen, SectionHeader, Text, colors, radii, spacing, TOUCH_TARGET } from '@/ui';
 
 import { weekGrid, type DayCell } from './weekGrid';
+
+function AddButton({ label, onPress }: { label: string; onPress: () => void }) {
+  return (
+    <Pressable accessibilityRole="button" accessibilityLabel={label} onPress={onPress} style={styles.iconButton}>
+      <Icon name="plus" size={22} />
+    </Pressable>
+  );
+}
 
 function DayTile({ cell }: { cell: DayCell }) {
   const { language, locale } = useLanguage();
@@ -48,13 +58,14 @@ function DayTile({ cell }: { cell: DayCell }) {
   );
 }
 
-/** My progress, my goals and my plan. */
+/** My progress, my plan, my routines and my goals. */
 export function MeScreen() {
   const { t } = useTranslation();
   const today = localToday();
   const { data: profile } = useProfile();
   const { data: entries = [] } = useWeek(weekStart(today));
   const { data: goals = [] } = useGoalProgress(null);
+  const { data: routines = [] } = useRoutines();
 
   return (
     <Screen>
@@ -76,17 +87,17 @@ export function MeScreen() {
       </View>
 
       <SectionHeader
+        title={t('me.routines')}
+        action={<AddButton label={t('me.addRoutine')} onPress={() => router.push('/routine/new')} />}
+      />
+      {routines.length === 0 ? <Text variant="small">{t('me.noRoutines')}</Text> : null}
+      {routines.map((routine) => (
+        <RoutineRow key={routine.id} routine={routine} />
+      ))}
+
+      <SectionHeader
         title={t('me.goals')}
-        action={
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t('me.addGoal')}
-            onPress={() => router.push('/goals/new')}
-            style={styles.iconButton}
-          >
-            <Icon name="plus" size={22} />
-          </Pressable>
-        }
+        action={<AddButton label={t('me.addGoal')} onPress={() => router.push('/goals/new')} />}
       />
       {goals.length === 0 ? <Text variant="small">{t('me.noGoals')}</Text> : null}
       {goals.map((goal) => (
