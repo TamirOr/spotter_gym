@@ -361,8 +361,6 @@ export const he = {
     profileTitle: 'איך קוראים לך?',
     addPhoto: 'הוספת תמונה',
     changePhoto: 'החלפת תמונה',
-    goalTitle: 'היעד הראשון',
-    goalHint: 'אפשר לשנות בכל זמן',
     notificationsTitle: 'התראות',
     notificationsWhy: 'כך יודעים כשחברים בדרך לאימון, ומקבלים עידודים מהקליקה.',
     enableNotifications: 'הפעלת התראות',

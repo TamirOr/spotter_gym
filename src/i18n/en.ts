@@ -355,8 +355,6 @@ export const en: Translation = {
     profileTitle: 'What’s your name?',
     addPhoto: 'Add a photo',
     changePhoto: 'Change photo',
-    goalTitle: 'Your first goal',
-    goalHint: 'You can change it any time',
     notificationsTitle: 'Notifications',
     notificationsWhy: 'So you know when friends are heading out, and get cheers from your clique.',
     enableNotifications: 'Turn on notifications',
