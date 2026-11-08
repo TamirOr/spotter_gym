@@ -79,6 +79,9 @@ export const he = {
       title: '{{activity}}',
       didNotHappen: 'לא יצא',
     },
+    seen_one: 'צפייה אחת מהקליקה',
+    seen_two: 'שתי צפיות מהקליקה',
+    seen_other: '{{count}} צפיות מהקליקה',
     done: {
       eyebrow: 'האימון הושלם',
       noCheers: 'כל הכבוד!',
@@ -118,6 +121,8 @@ export const he = {
     title: 'העידודים שלך היום',
     empty: 'עוד אין עידודים',
     formerMember: 'חשבון שנמחק',
+    seenHeading: 'צפיות',
+    noViews: 'עוד אין צפיות',
   },
   log: {
     title: 'רישום אימון',
@@ -129,6 +134,7 @@ export const he = {
     distance: 'מרחק בק״מ',
     note: 'הערה',
     submit: 'סיימתי',
+    editTitle: 'עריכת אימון',
   },
   activityPicker: {
     label: 'פעילות',
@@ -149,6 +155,13 @@ export const he = {
       week: 'שבוע',
       month: 'חודש',
     },
+    notifications: 'התראות מהקליקה הזאת',
+    owner: 'בעלים',
+    edit: 'עריכת הקליקה',
+    makeOwner: 'העברת בעלות',
+    makeOwnerConfirm: 'להעביר את הבעלות על {{clique}} אל {{name}}?',
+    removeMember: 'הסרה',
+    removeMemberConfirm: 'להסיר את {{name}} מהקליקה {{clique}}?',
     lastWeekWinner: 'מקום ראשון בשבוע שעבר: {{name}}',
     membersHeading: 'חברים ויעדים משותפים',
     noSharedGoals: 'אין יעדים משותפים',
@@ -165,6 +178,10 @@ export const he = {
     title: 'קליקה חדשה',
     name: 'שם הקליקה',
     create: 'יצירה',
+  },
+  editClique: {
+    title: 'עריכת הקליקה',
+    photo: 'החלפת תמונה',
   },
   invite: {
     title: 'הזמנת חברים',
@@ -191,8 +208,13 @@ export const he = {
     progress: '{{progress}} מתוך {{target}}',
     day: {
       skip: 'דילוג על האימון הזה',
-      moveTomorrow: 'העברה למחר',
+      moveTo: 'העברה ליום אחר השבוע',
       log: 'רישום אימון',
+      logged: 'נרשם',
+      planned: 'מתוכנן',
+      edit: 'עריכה',
+      delete: 'מחיקה',
+      deleteConfirm: 'למחוק את האימון? העידודים עליו יימחקו איתו.',
     },
   },
   goal: {
@@ -220,6 +242,18 @@ export const he = {
   },
   goalEditor: {
     title: 'יעד חדש',
+    editTitle: 'עריכת יעד',
+    nextPeriodNote: 'יעד או תדירות חדשים מתחילים מהתקופה הבאה, כך שההתקדמות הנוכחית לא משתנה.',
+    ends: 'סיום',
+    endsNever: 'בלי תאריך סיום',
+    endsIn: {
+      weeks4: 'בעוד 4 שבועות',
+      months3: 'בעוד 3 חודשים',
+      months6: 'בעוד חצי שנה',
+    },
+    endsOn: 'עד {{date}}',
+    delete: 'מחיקת היעד',
+    deleteConfirm: 'למחוק את היעד?',
     metric: 'מה מודדים',
     metrics: {
       sessions: 'אימונים',
@@ -262,11 +296,12 @@ export const he = {
     add: 'הוספת אימון',
     empty: 'עוד אין אימונים בתוכנית',
     remove: 'הסרה',
+    edit: 'עריכה',
     lockNote: 'שינויים נכנסים לדירוג מהשבוע הבא',
     repeat: {
       once: 'פעם אחת',
       weekly: 'כל שבוע',
-      biweekly: 'כל שבועיים',
+      everyNWeeks: 'כל כמה שבועות',
       monthly: 'כל חודש',
     },
     rule: {
@@ -279,6 +314,9 @@ export const he = {
   },
   planEditor: {
     title: 'אימון חדש בתוכנית',
+    editTitle: 'עריכת אימון בתוכנית',
+    intervalWeeks_two: 'כל שבועיים',
+    intervalWeeks_other: 'כל {{count}} שבועות',
     repeat: 'חזרה',
     days: 'ימים',
     date: 'תאריך',
@@ -312,6 +350,7 @@ export const he = {
     goals: 'יעדים',
     recent: 'אימונים אחרונים',
     noRecent: 'אין אימונים אחרונים',
+    sendNote: 'שליחת הודעה',
   },
   settings: {
     title: 'הגדרות',
@@ -340,6 +379,8 @@ export const he = {
     },
     quietHours: 'שעות שקטות',
     quietHoursRange: '{{start}}–{{end}}',
+    quietHoursFrom: 'התחלה',
+    quietHoursUntil: 'סיום',
     goingThroughQuiet: '"בדרך" עובר גם בשעות שקטות',
     nudges: 'לקבל דרבונים',
     pause: 'הפסקה',
@@ -490,5 +531,7 @@ export const he = {
     photoAlreadySeen: 'את התמונה הזאת אפשר לראות רק פעם אחת',
     photoUnavailable: 'התמונה כבר לא זמינה',
     routineDaysExceedTimes: 'נבחרו יותר ימים מאימונים בשבוע',
+    invalidEndDate: 'יעד לא יכול להסתיים בעבר',
+    notAllowed: 'רק לבעלים של הקליקה מותר לעשות את זה',
   },
 };

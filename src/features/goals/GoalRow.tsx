@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { activityLabel } from '@/features/activities/activities';
 import { useActivity } from '@/features/activities/api';
@@ -8,14 +8,20 @@ import { ProgressBar, Text, colors, spacing } from '@/ui';
 
 import { goalFraction, goalTitle, type GoalProgress } from './goalText';
 
-export function GoalRow({ goal }: { goal: GoalProgress }) {
+/** A goal with this period's progress. Opens the goal editor when given onPress. */
+export function GoalRow({ goal, onPress }: { goal: GoalProgress; onPress?: () => void }) {
   const { t } = useTranslation();
   const { language, locale } = useLanguage();
   const activity = useActivity(goal.activity_id);
   const number = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 });
 
   return (
-    <View style={styles.row}>
+    <Pressable
+      accessibilityRole={onPress ? 'button' : undefined}
+      disabled={!onPress}
+      onPress={onPress}
+      style={styles.row}
+    >
       <View style={styles.text}>
         <Text variant="strong" userContent>
           {goalTitle(t, goal, activity ? activityLabel(activity, language) : '', locale)}
@@ -25,7 +31,7 @@ export function GoalRow({ goal }: { goal: GoalProgress }) {
         </Text>
       </View>
       <ProgressBar value={goalFraction(goal)} />
-    </View>
+    </Pressable>
   );
 }
 

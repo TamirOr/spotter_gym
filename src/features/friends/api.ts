@@ -64,3 +64,28 @@ export function useFriendAction(action: FriendAction) {
     onSuccess: invalidateFriends,
   });
 }
+
+/** What "Send a note" opens on a friend's profile: a cheer on their open workout, or a nudge. */
+export type NoteTarget = { kind: 'cheer'; checkinId: string } | { kind: 'nudge' } | null;
+
+/** The server decides who may be cheered or nudged; this asks it for one friend. */
+export function useNoteTarget(userId: string) {
+  return useQuery({
+    queryKey: queryKeys.noteTarget(userId),
+    queryFn: async (): Promise<NoteTarget> => {
+      const [latest] = unwrap(
+        await supabase
+          .from('checkins')
+          .select('id')
+          .eq('user_id', userId)
+          .in('state', ['going', 'done'])
+          .order('started_at', { ascending: false })
+          .limit(1),
+      );
+      if (latest && unwrap(await supabase.rpc('can_cheer', { p_checkin_id: latest.id }))) {
+        return { kind: 'cheer', checkinId: latest.id };
+      }
+      return unwrap(await supabase.rpc('can_nudge', { p_recipient_id: userId })) ? { kind: 'nudge' } : null;
+    },
+  });
+}

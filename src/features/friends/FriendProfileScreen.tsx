@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
@@ -10,7 +10,9 @@ import { localToday } from '@/lib/dates';
 import { queryKeys } from '@/lib/queryKeys';
 import { supabase, unwrap } from '@/lib/supabase';
 import { useLanguage } from '@/lib/useLanguage';
-import { Avatar, Screen, SectionHeader, Text, colors, spacing } from '@/ui';
+import { Avatar, Button, Screen, SectionHeader, Text, colors, spacing } from '@/ui';
+
+import { useNoteTarget } from './api';
 
 /** What a friend shares: their name, shared goals and recent workouts. Row rules decide what is visible. */
 function useFriendProfile(userId: string) {
@@ -44,6 +46,7 @@ export function FriendProfileScreen() {
   const { language, locale } = useLanguage();
   const { userId } = useLocalSearchParams<{ userId: string }>();
   const { data } = useFriendProfile(userId);
+  const { data: noteTarget } = useNoteTarget(userId);
   const { data: activities = [] } = useActivities();
   const nameOf = (activityId: string) => {
     const activity = activities.find((candidate) => candidate.id === activityId);
@@ -65,6 +68,15 @@ export function FriendProfileScreen() {
           {data.profile.full_name}
         </Text>
       </View>
+      {/* A note rides on a cheer while they train or just finished, otherwise on a nudge. */}
+      {noteTarget ? (
+        <Button
+          label={t('friend.sendNote')}
+          onPress={() =>
+            router.push(noteTarget.kind === 'cheer' ? `/cheer/${noteTarget.checkinId}` : `/nudge/${userId}`)
+          }
+        />
+      ) : null}
 
       <SectionHeader title={t('friend.goals')} />
       {data.goals.map((goal) => (

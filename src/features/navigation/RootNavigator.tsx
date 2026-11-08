@@ -57,11 +57,14 @@ export function RootNavigator() {
         <Stack.Screen name="cheer/[checkinId]" options={sheet} />
         <Stack.Screen name="nudge/[userId]" options={sheet} />
         <Stack.Screen name="goals/new" options={sheet} />
+        <Stack.Screen name="goals/[goalId]" options={sheet} />
         <Stack.Screen name="plan/new" options={sheet} />
+        <Stack.Screen name="plan/[planItemId]" options={sheet} />
         <Stack.Screen name="routine/new" options={sheet} />
         <Stack.Screen name="routine/[routineId]" options={sheet} />
         <Stack.Screen name="day/[date]" options={sheet} />
         <Stack.Screen name="clique/new" options={sheet} />
+        <Stack.Screen name="clique/edit" options={sheet} />
       </Stack.Protected>
     </Stack>
   );

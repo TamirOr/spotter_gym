@@ -75,6 +75,7 @@ type GoalRow = {
   visibility: Enums['goal_visibility'];
   starts_on: string;
   ends_on: string | null;
+  previous_id: string | null;
   created_at: string;
 };
 
@@ -180,6 +181,12 @@ type PhotoViewRow = {
   opened_at: string;
 };
 
+type CheckinViewRow = {
+  checkin_id: string;
+  viewer_id: string;
+  seen_at: string;
+};
+
 type NudgeRow = {
   id: string;
   sender_id: string;
@@ -253,6 +260,12 @@ export type Database = {
         Partial<ReactionRow>,
         [Relationship<'checkin_id', 'checkins'>, Relationship<'sender_id', 'profiles'>]
       >;
+      checkin_views: Table<
+        CheckinViewRow,
+        Record<string, never>,
+        Record<string, never>,
+        [Relationship<'checkin_id', 'checkins'>, Relationship<'viewer_id', 'profiles'>]
+      >;
       nudges: Table<NudgeRow, Pick<NudgeRow, 'recipient_id'> & Partial<Pick<NudgeRow, 'body'>>>;
       // Written only through attach_going_photo() and open_going_photo().
       going_photos: Table<GoingPhotoRow, Record<string, never>, Record<string, never>>;
@@ -276,11 +289,29 @@ export type Database = {
     Functions: {
       get_my_profile: { Args: Record<string, never>; Returns: ProfileRow };
       match_activity: { Args: { p_name: string }; Returns: { activity_id: string; exact: boolean }[] };
-      revise_goal: {
-        Args: { p_goal_id: string; p_target: number; p_period: Enums['goal_period'] };
-        Returns: GoalRow;
+      update_goal: {
+        Args: {
+          p_goal_id: string;
+          p_target: number;
+          p_period: Enums['goal_period'];
+          p_visibility: Enums['goal_visibility'];
+          p_ends_on?: string | null;
+        };
+        Returns: string;
       };
       remove_plan_item: { Args: { p_plan_item_id: string }; Returns: undefined };
+      edit_plan_item: {
+        Args: {
+          p_plan_item_id: string;
+          p_activity_id: string;
+          p_time: string | null;
+          p_rrule: string | null;
+          p_starts_on: string;
+          p_reminder_lead_min: number | null;
+        };
+        Returns: string;
+      };
+      mark_checkins_seen: { Args: { p_checkin_ids: string[] }; Returns: undefined };
       save_routine: {
         Args: { p_routine_id: string | null; p_activity_id: string; p_times_per_week: number; p_days?: Json };
         Returns: string;
@@ -316,6 +347,10 @@ export type Database = {
       invite_to_clique: { Args: { p_clique_id: string; p_user_id: string }; Returns: undefined };
       respond_clique_invite: { Args: { p_clique_id: string; p_accept: boolean }; Returns: undefined };
       leave_clique: { Args: { p_clique_id: string }; Returns: undefined };
+      remove_clique_member: { Args: { p_clique_id: string; p_user_id: string }; Returns: undefined };
+      transfer_clique_ownership: { Args: { p_clique_id: string; p_user_id: string }; Returns: undefined };
+      can_cheer: { Args: { p_checkin_id: string }; Returns: boolean };
+      can_nudge: { Args: { p_recipient_id: string }; Returns: boolean };
       save_push_subscription: { Args: { p_subscription: Json }; Returns: undefined };
       delete_my_account: { Args: Record<string, never>; Returns: undefined };
       admin_users: {
@@ -395,6 +430,8 @@ export type Database = {
         Args: { p_week_start: string };
         Returns: {
           day: string;
+          /** The day the occurrence was planned on; a skip or a move refers to it. Null for unplanned workouts. */
+          planned_on: string | null;
           activity_id: string;
           time: string | null;
           plan_item_id: string | null;

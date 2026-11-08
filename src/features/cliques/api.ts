@@ -92,3 +92,47 @@ export function useInviteToClique() {
     onSuccess: invalidateCliques,
   });
 }
+
+/** My own switch: a muted clique sends me no workout pushes. Friends in another clique still reach me there. */
+export function useSetCliqueMuted() {
+  const userId = useUserId();
+  return useMutation({
+    mutationFn: async ({ cliqueId, muted }: { cliqueId: string; muted: boolean }) =>
+      unwrap(
+        await supabase.from('clique_members').update({ muted }).eq('clique_id', cliqueId).eq('user_id', userId),
+      ),
+    onMutate: ({ cliqueId, muted }) => {
+      queryClient.setQueryData<Membership[]>(queryKeys.cliques, (rows) =>
+        rows?.map((row) => (row.clique.id === cliqueId ? { ...row, muted } : row)),
+      );
+    },
+    onSettled: () => queryClient.invalidateQueries({ queryKey: queryKeys.cliques }),
+  });
+}
+
+export type CliqueChanges = Partial<Pick<Clique, 'name' | 'photo_url'>>;
+
+/** The owner renames the clique or changes its photo. */
+export function useUpdateClique() {
+  return useMutation({
+    mutationFn: async ({ cliqueId, changes }: { cliqueId: string; changes: CliqueChanges }) =>
+      unwrap(await supabase.from('cliques').update(changes).eq('id', cliqueId)),
+    onSuccess: invalidateCliques,
+  });
+}
+
+export function useRemoveCliqueMember() {
+  return useMutation({
+    mutationFn: async ({ cliqueId, userId }: { cliqueId: string; userId: string }) =>
+      unwrap(await supabase.rpc('remove_clique_member', { p_clique_id: cliqueId, p_user_id: userId })),
+    onSuccess: invalidateCliques,
+  });
+}
+
+export function useTransferCliqueOwnership() {
+  return useMutation({
+    mutationFn: async ({ cliqueId, userId }: { cliqueId: string; userId: string }) =>
+      unwrap(await supabase.rpc('transfer_clique_ownership', { p_clique_id: cliqueId, p_user_id: userId })),
+    onSuccess: invalidateCliques,
+  });
+}

@@ -42,6 +42,10 @@ const NOTIFICATION_KINDS: Enum<'notification_kind'>[] = [
 // Admins can mute the push about new sign-ups. Approval pushes cannot be muted.
 const ADMIN_NOTIFICATION_KIND: Enum<'notification_kind'> = 'signup_pending';
 
+// Quiet hours start in the evening and end in the morning; these cover most routines.
+const QUIET_STARTS = ['21:00', '22:00', '23:00', '00:00'];
+const QUIET_ENDS = ['06:00', '07:00', '08:00', '09:00'];
+
 const PAUSE_LENGTHS: PauseLength[] = ['week', 'month', 'openEnded'];
 const PAUSE_LABELS = {
   week: 'settings.pauseWeek',
@@ -127,6 +131,28 @@ export function SettingsScreen() {
           end: shortTime(profile.quiet_hours_end),
         })}`}
       />
+      <Text variant="label">{t('settings.quietHoursFrom')}</Text>
+      <View style={styles.chips}>
+        {QUIET_STARTS.map((time) => (
+          <Chip
+            key={time}
+            label={time}
+            selected={shortTime(profile.quiet_hours_start) === time}
+            onPress={() => update({ quiet_hours_start: time })}
+          />
+        ))}
+      </View>
+      <Text variant="label">{t('settings.quietHoursUntil')}</Text>
+      <View style={styles.chips}>
+        {QUIET_ENDS.map((time) => (
+          <Chip
+            key={time}
+            label={time}
+            selected={shortTime(profile.quiet_hours_end) === time}
+            onPress={() => update({ quiet_hours_end: time })}
+          />
+        ))}
+      </View>
       <ToggleRow
         label={t('settings.goingThroughQuiet')}
         value={profile.going_ignores_quiet_hours}
