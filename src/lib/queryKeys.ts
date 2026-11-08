@@ -8,10 +8,11 @@ export const queryKeys = {
   cliqueToday: (cliqueId: string) => ['clique-today', cliqueId] as const,
   leaderboard: (cliqueId: string, period: string, periodsAgo: number) =>
     ['leaderboard', cliqueId, period, periodsAgo] as const,
-  goals: (cliqueId: string | null) => ['goals', cliqueId ?? 'mine'] as const,
   week: (weekStart: string) => ['week', weekStart] as const,
   planItems: ['plan-items'] as const,
   routines: ['routines'] as const,
+  personRoutines: (userId: string) => ['routines', 'person', userId] as const,
+  cliqueRoutines: (cliqueId: string) => ['routines', 'clique', cliqueId] as const,
   friendships: ['friendships'] as const,
   profileSearch: (query: string) => ['profile-search', query] as const,
   person: (userId: string) => ['person', userId] as const,
@@ -25,12 +26,11 @@ export const queryKeys = {
   adminUserSupport: (userId: string) => ['admin', 'support', userId] as const,
 };
 
-/** Everything a check-in can change: today, boards, goals, the week grid and which photos are open. */
+/** Everything a check-in can change: today, boards, the week grid and which photos are open. */
 export const workoutQueries = [
   queryKeys.myToday,
   ['clique-today'],
   ['leaderboard'],
-  ['goals'],
   ['week'],
   queryKeys.activityUsage,
   queryKeys.goingPhotos,

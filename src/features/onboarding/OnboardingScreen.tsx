@@ -18,7 +18,7 @@ type Step = 'install' | 'profile' | 'routines' | 'notifications';
  * In the browser, first how to add Spotter to the Home Screen (iPhone needs it for notifications). Then name and
  * photo, optional workout routines, and notifications after explaining why. Progress is saved on the
  * server, so opening the Home Screen app picks up from where the browser left off, without the guide.
- * Goals are added later on Me, so skipping routines leads straight on.
+ * Skipping routines leads straight on.
  */
 export function OnboardingScreen() {
   const { t } = useTranslation();

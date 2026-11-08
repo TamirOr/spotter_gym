@@ -8,10 +8,10 @@ import { Button, Screen, Text, spacing } from '@/ui';
 import { useLeaveClique } from './api';
 import { CliqueInvites } from './CliqueInvites';
 import { CliqueSwitcher } from './CliqueSwitcher';
-import { MembersAndGoals } from './MembersAndGoals';
+import { MembersAndRoutines } from './MembersAndRoutines';
 import { useSelectedClique } from './SelectedCliqueProvider';
 
-/** Where I stand first, then who is in the group and their shared goals, then invites. */
+/** Where I stand first, then who is in the group and their workout routines, then invites. */
 export function CliqueScreen() {
   const { t } = useTranslation();
   const { clique } = useSelectedClique();
@@ -24,7 +24,7 @@ export function CliqueScreen() {
       {clique ? (
         <>
           <Leaderboard cliqueId={clique.id} />
-          <MembersAndGoals cliqueId={clique.id} />
+          <MembersAndRoutines cliqueId={clique.id} />
           <Button label={t('clique.invite')} variant="outline" onPress={() => router.push('/invite')} />
           <Button
             label={t('clique.leave')}

@@ -402,6 +402,16 @@ export type Database = {
           status: 'done' | 'planned' | 'skipped' | 'missed';
         }[];
       };
+      clique_routines: {
+        Args: { p_clique_id: string };
+        Returns: {
+          routine_id: string;
+          user_id: string;
+          activity_id: string;
+          times_per_week: number;
+          days: { weekday: Enums['weekday']; name: string | null }[];
+        }[];
+      };
       goal_progress: {
         Args: { p_clique_id?: string | null };
         Returns: {

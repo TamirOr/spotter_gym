@@ -85,7 +85,7 @@ export function FriendsScreen() {
             photoUrl={person(id)?.avatar_url ?? null}
             actions={
               <>
-                <Button label={t('friend.goals')} variant="quiet" onPress={() => router.push(`/friend/${id}`)} />
+                <Button label={t('friend.profile')} variant="quiet" onPress={() => router.push(`/friend/${id}`)} />
                 <Button
                   label={t('friends.remove')}
                   variant="quiet"

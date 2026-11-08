@@ -5,27 +5,20 @@ import { StyleSheet, View } from 'react-native';
 
 import { activityLabel } from '@/features/activities/activities';
 import { useActivities } from '@/features/activities/api';
-import { goalTitle } from '@/features/goals/goalText';
-import { localToday } from '@/lib/dates';
+import { usePersonRoutines } from '@/features/routines/api';
+import { RoutineSummary } from '@/features/routines/RoutineSummary';
 import { queryKeys } from '@/lib/queryKeys';
 import { supabase, unwrap } from '@/lib/supabase';
 import { useLanguage } from '@/lib/useLanguage';
 import { Avatar, Screen, SectionHeader, Text, colors, spacing } from '@/ui';
 
-/** What a friend shares: their name, shared goals and recent workouts. Row rules decide what is visible. */
+/** What a friend shares: their name and recent workouts. Row rules decide what is visible. */
 function useFriendProfile(userId: string) {
   return useQuery({
     queryKey: queryKeys.recentCheckins(userId),
     queryFn: async () => {
-      const today = localToday();
-      const [profile, goals, checkins] = await Promise.all([
+      const [profile, checkins] = await Promise.all([
         supabase.from('profiles').select('full_name, avatar_url').eq('id', userId).single(),
-        supabase
-          .from('goals')
-          .select('id, activity_id, metric, target, period')
-          .eq('user_id', userId)
-          .lte('starts_on', today)
-          .or(`ends_on.is.null,ends_on.gte.${today}`),
         supabase
           .from('checkins')
           .select('id, activity_id, local_day')
@@ -34,7 +27,7 @@ function useFriendProfile(userId: string) {
           .order('ended_at', { ascending: false })
           .limit(10),
       ]);
-      return { profile: unwrap(profile), goals: unwrap(goals), checkins: unwrap(checkins) };
+      return { profile: unwrap(profile), checkins: unwrap(checkins) };
     },
   });
 }
@@ -44,6 +37,7 @@ export function FriendProfileScreen() {
   const { language, locale } = useLanguage();
   const { userId } = useLocalSearchParams<{ userId: string }>();
   const { data } = useFriendProfile(userId);
+  const { data: routines = [] } = usePersonRoutines(userId);
   const { data: activities = [] } = useActivities();
   const nameOf = (activityId: string) => {
     const activity = activities.find((candidate) => candidate.id === activityId);
@@ -66,11 +60,11 @@ export function FriendProfileScreen() {
         </Text>
       </View>
 
-      <SectionHeader title={t('friend.goals')} />
-      {data.goals.map((goal) => (
-        <Text key={goal.id} variant="strong" userContent style={styles.line}>
-          {goalTitle(t, goal, nameOf(goal.activity_id), locale)}
-        </Text>
+      {routines.length > 0 ? <SectionHeader title={t('friend.routines')} /> : null}
+      {routines.map((routine) => (
+        <View key={routine.id} style={styles.line}>
+          <RoutineSummary routine={routine} />
+        </View>
       ))}
 
       <SectionHeader title={t('friend.recent')} />

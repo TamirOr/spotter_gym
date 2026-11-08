@@ -15,6 +15,6 @@ describe('i18n', () => {
   it('switches to English', async () => {
     await setLanguage('en');
     expect(t('todayBar.done.cheers', { count: 2 })).toBe('2 cheers from your clique');
-    expect(t('goal.sessions.week', { count: 1, activity: 'Gym' })).toBe('Gym once a week');
+    expect(t('routine.timesPerWeek', { count: 1 })).toBe('Once a week');
   });
 });

@@ -56,7 +56,6 @@ export function RootNavigator() {
         <Stack.Screen name="cheers" options={sheet} />
         <Stack.Screen name="cheer/[checkinId]" options={sheet} />
         <Stack.Screen name="nudge/[userId]" options={sheet} />
-        <Stack.Screen name="goals/new" options={sheet} />
         <Stack.Screen name="plan/new" options={sheet} />
         <Stack.Screen name="routine/new" options={sheet} />
         <Stack.Screen name="routine/[routineId]" options={sheet} />

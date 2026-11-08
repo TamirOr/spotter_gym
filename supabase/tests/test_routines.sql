@@ -1,9 +1,13 @@
--- Workout routines: times a week, optional days with names, owner only.
+-- Workout routines: times a week, optional days with names, shared with the clique.
 begin;
 
 select test.user('Noa') as noa \gset
 select test.user('Yoav') as yoav \gset
+select test.user('Dana') as dana \gset
+select test.user('Omer') as omer \gset
 select test.befriend(:'noa', :'yoav');
+select test.befriend(:'noa', :'omer');
+select test.clique('Crew', array[:'noa', :'dana']::uuid[]) as crew \gset
 
 set role authenticated;
 select test.login(:'noa');
@@ -44,9 +48,44 @@ select test.fails($$insert into public.routines (activity_id, times_per_week) va
 select test.fails($$insert into public.routine_days (routine_id, weekday) values ('$$ || :'gym' || $$', 'MO')$$,
   'permission denied', 'days are written only through save_routine');
 
+-- A clique mate sees my routine and its days.
+select test.login(:'dana');
+select test.eq((select array_agg(id) from public.routines), array[:'gym'::uuid], 'clique mates see my routines');
+select test.eq((select count(*) from public.routine_days)::integer, 1, 'clique mates see my routine days');
+select test.eq(
+  (select days from public.clique_routines(:'crew') where routine_id = :'gym'),
+  '[{"name": null, "weekday": "SU"}]'::jsonb,
+  'the clique screen lists a routine with its days'
+);
+select test.fails($$select public.save_routine('$$ || :'gym' || $$', test.activity('Gym'), 1, '[]')$$,
+  'not_found', 'a clique mate cannot edit my routine');
+delete from public.routines where id = :'gym';
+
+-- Being added to the clique is enough: the routine shows as soon as Omer is an active member.
+select test.login(:'omer');
+select test.eq((select count(*) from public.routines)::integer, 0, 'a friend outside my cliques does not see my routines');
+select test.eq((select count(*) from public.clique_routines(:'crew'))::integer, 0, 'only members read the clique''s routines');
+reset role;
+insert into public.clique_members (clique_id, user_id, status, joined_at) values (:'crew', :'omer', 'active', now());
+set role authenticated;
+select test.login(:'omer');
+select test.eq((select array_agg(id) from public.routines), array[:'gym'::uuid], 'a new member sees my routine');
+select public.save_routine(null, test.activity('Gym'), 2, '[]') as omer_gym \gset
+select test.login(:'noa');
+select test.eq((select count(*) from public.clique_routines(:'crew') where user_id = :'omer')::integer, 1,
+  'a new member''s routine shows to the clique');
+
+-- Leaving the clique hides my routines from it again.
+reset role;
+update public.clique_members set status = 'left' where clique_id = :'crew' and user_id = :'omer';
+set role authenticated;
+select test.login(:'omer');
+select test.eq((select count(*) from public.routines where user_id = :'noa')::integer, 0, 'after leaving, routines are hidden');
+select test.eq((select count(*) from public.clique_routines(:'crew'))::integer, 0, 'a former member cannot read the clique''s routines');
+
 select test.login(:'yoav');
-select test.eq((select count(*) from public.routines)::integer, 0, 'friends never see my routines');
-select test.eq((select count(*) from public.routine_days)::integer, 0, 'friends never see my routine days');
+select test.eq((select count(*) from public.routines)::integer, 0, 'friends outside my cliques never see my routines');
+select test.eq((select count(*) from public.routine_days)::integer, 0, 'friends outside my cliques never see my routine days');
 select test.fails($$select public.save_routine('$$ || :'gym' || $$', test.activity('Gym'), 1, '[]')$$,
   'not_found', 'nobody else can edit my routine');
 delete from public.routines where id = :'gym';

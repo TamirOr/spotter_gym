@@ -5,8 +5,6 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { activityLabel } from '@/features/activities/activities';
 import { useActivity } from '@/features/activities/api';
 import { useAdminView } from '@/features/admin/AdminViewProvider';
-import { useGoalProgress } from '@/features/goals/api';
-import { GoalRow } from '@/features/goals/GoalRow';
 import { useWeek } from '@/features/plan/api';
 import { useProfile } from '@/features/profile/api';
 import { useRoutines } from '@/features/routines/api';
@@ -59,14 +57,13 @@ function DayTile({ cell }: { cell: DayCell }) {
   );
 }
 
-/** My progress, my plan, my routines and my goals. */
+/** My progress, my plan, and my routines. */
 export function MeScreen() {
   const { t } = useTranslation();
   const today = localToday();
   const { data: profile } = useProfile();
   const { switchTo } = useAdminView();
   const { data: entries = [] } = useWeek(weekStart(today));
-  const { data: goals = [] } = useGoalProgress(null);
   const { data: routines = [] } = useRoutines();
 
   return (
@@ -95,15 +92,6 @@ export function MeScreen() {
       {routines.length === 0 ? <Text variant="small">{t('me.noRoutines')}</Text> : null}
       {routines.map((routine) => (
         <RoutineRow key={routine.id} routine={routine} />
-      ))}
-
-      <SectionHeader
-        title={t('me.goals')}
-        action={<AddButton label={t('me.addGoal')} onPress={() => router.push('/goals/new')} />}
-      />
-      {goals.length === 0 ? <Text variant="small">{t('me.noGoals')}</Text> : null}
-      {goals.map((goal) => (
-        <GoalRow key={goal.goal_id} goal={goal} />
       ))}
 
       <View style={styles.links}>
