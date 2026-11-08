@@ -1,7 +1,8 @@
 name: Database
 
-# Applies new migrations to the Supabase project. Run it by hand from the Actions tab, or as the first
-# step of Deploy. Needs the repository secrets SUPABASE_ACCESS_TOKEN and SUPABASE_DB_PASSWORD.
+# Applies new migrations to the Supabase project and configures email-code sign-in. Run it by hand
+# from the Actions tab, or as the first step of Deploy. Needs the repository secrets
+# SUPABASE_ACCESS_TOKEN and SUPABASE_DB_PASSWORD; the SMTP_* secrets are optional (see docs/setup.md).
 on:
   workflow_dispatch:
   workflow_call:
@@ -10,6 +11,16 @@ on:
         required: true
       SUPABASE_DB_PASSWORD:
         required: true
+      SMTP_HOST:
+        required: false
+      SMTP_PORT:
+        required: false
+      SMTP_USER:
+        required: false
+      SMTP_PASS:
+        required: false
+      SMTP_SENDER:
+        required: false
 
 permissions:
   contents: read
@@ -36,3 +47,12 @@ jobs:
       - run: supabase db push --remote --yes
       - name: List applied migrations
         run: supabase migration list --remote
+      - name: Configure email-code sign-in
+        run: node scripts/configure-auth.mjs
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          SMTP_SENDER: ${{ secrets.SMTP_SENDER }}
