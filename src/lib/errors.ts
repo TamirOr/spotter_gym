@@ -14,6 +14,8 @@ const KNOWN_ERRORS = {
   not_approved: 'errors.notApproved',
   not_friends: 'errors.notFriends',
   outside_logging_window: 'errors.outsideLoggingWindow',
+  photo_already_seen: 'errors.photoAlreadySeen',
+  photo_unavailable: 'errors.photoUnavailable',
   routine_days_exceed_times: 'errors.routineDaysExceedTimes',
 } as const satisfies Record<string, TranslationKey>;
 

@@ -59,6 +59,7 @@
     "testPathIgnorePatterns": [
       "/node_modules/",
       "/supabase/functions/push-dispatch/",
+      "/supabase/functions/photo-sweep/",
       "/scripts/"
     ]
   }

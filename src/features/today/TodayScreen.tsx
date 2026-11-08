@@ -1,8 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
+import { useUserId } from '@/features/auth/AuthProvider';
 import { CliqueSwitcher } from '@/features/cliques/CliqueSwitcher';
 import { useSelectedClique } from '@/features/cliques/SelectedCliqueProvider';
+import { useGoingPhotos } from '@/features/photos/api';
+import { photoState } from '@/features/photos/photos';
 import { formatLongDate } from '@/lib/dates';
 import { useLanguage } from '@/lib/useLanguage';
 import { Screen, Text, spacing } from '@/ui';
@@ -20,6 +23,8 @@ export function TodayScreen() {
   const { clique } = useSelectedClique();
   const myToday = useMyToday();
   const friends = useCliqueToday(clique?.id);
+  const photos = useGoingPhotos();
+  const me = useUserId();
 
   return (
     <Screen footer={myToday.data ? <TodayBar state={todayBarState(myToday.data)} /> : null}>
@@ -33,7 +38,7 @@ export function TodayScreen() {
       </Text>
       {friends.isLoading ? <ActivityIndicator /> : null}
       {friends.data?.map((friend) => (
-        <FriendLine key={friend.user_id} friend={friend} />
+        <FriendLine key={friend.user_id} friend={friend} photo={photoState(photos.data, friend.checkin_id, me)} />
       ))}
       {friends.data?.length === 0 ? <Text variant="small">{t('today.emptyClique')}</Text> : null}
       {!clique ? <Text variant="small">{t('today.noClique')}</Text> : null}

@@ -40,6 +40,8 @@ export const en: Translation = {
     cheerSentA11y: 'Cheer sent to {{name}}',
     nudgeA11y: 'Nudge {{name}}',
     nudgeSentA11y: 'Nudge sent to {{name}}',
+    photo: '📸',
+    photoA11y: 'Open {{name}}’s photo',
     weekProgress: '{{completed}} of {{planned}} workouts this week',
     noPlanThisWeek: 'No plan for this week yet',
     rank: '#{{rank}}',
@@ -67,6 +69,9 @@ export const en: Translation = {
     going: {
       eyebrow: 'On the way',
       title: '{{activity}}, {{minutes}} min',
+      addPhoto: '📸 Add a photo for your clique',
+      photoShared: '📸 Photo shared with your clique',
+      photoViews: '📸 Photo views: {{count}}',
     },
     expired: {
       eyebrow: 'Did the workout happen?',
@@ -97,6 +102,10 @@ export const en: Translation = {
     noteLabel: 'Or a personal note',
     notePlaceholder: 'What do you want to say?',
     closed: 'This workout is no longer open for cheers',
+    photoOpen: '📸 Open photo',
+    photoOnce: 'You can see this photo once. It’s gone when you close this.',
+    photoSeen: 'You’ve seen the photo',
+    photoAlt: '{{name}}’s photo',
   },
   nudge: {
     title: 'Nudge {{name}}',
@@ -471,6 +480,8 @@ export const en: Translation = {
     cliqueFull: 'This clique already has 20 members',
     notFriends: 'You can only invite friends',
     outsideLoggingWindow: 'You can log a workout up to 48 hours back',
+    photoAlreadySeen: 'This photo can be seen only once',
+    photoUnavailable: 'This photo is no longer available',
     routineDaysExceedTimes: 'More days are chosen than workouts a week',
   },
 };

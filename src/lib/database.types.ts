@@ -165,6 +165,21 @@ type ReactionRow = {
   created_at: string;
 };
 
+type GoingPhotoRow = {
+  checkin_id: string;
+  user_id: string;
+  path: string;
+  created_at: string;
+  expires_at: string;
+  removed_at: string | null;
+};
+
+type PhotoViewRow = {
+  checkin_id: string;
+  viewer_id: string;
+  opened_at: string;
+};
+
 type NudgeRow = {
   id: string;
   sender_id: string;
@@ -239,6 +254,22 @@ export type Database = {
         [Relationship<'checkin_id', 'checkins'>, Relationship<'sender_id', 'profiles'>]
       >;
       nudges: Table<NudgeRow, Pick<NudgeRow, 'recipient_id'> & Partial<Pick<NudgeRow, 'body'>>>;
+      // Written only through attach_going_photo() and open_going_photo().
+      going_photos: Table<GoingPhotoRow, Record<string, never>, Record<string, never>>;
+      photo_views: Table<
+        PhotoViewRow,
+        Record<string, never>,
+        Record<string, never>,
+        [
+          {
+            foreignKeyName: string;
+            columns: ['checkin_id'];
+            isOneToOne: false;
+            referencedRelation: 'going_photos';
+            referencedColumns: ['checkin_id'];
+          },
+        ]
+      >;
       push_subscriptions: Table<PushSubscriptionRow>;
     };
     Views: Record<never, never>;
@@ -267,6 +298,8 @@ export type Database = {
         Returns: CheckinRow;
       };
       cancel_going: { Args: Record<string, never>; Returns: undefined };
+      attach_going_photo: { Args: { p_checkin_id: string }; Returns: undefined };
+      open_going_photo: { Args: { p_checkin_id: string }; Returns: string };
       search_profiles: {
         Args: { p_query: string };
         Returns: {

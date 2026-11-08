@@ -14,7 +14,8 @@ service instead of creating a bill.
    npx supabase db push
    ```
 
-3. Store the values the scheduled push job needs in Vault (SQL editor). The secret is any long random string:
+3. Store the values the scheduled jobs (web push and photo cleanup) need in Vault (SQL editor). The secret is
+   any long random string:
 
    ```sql
    select vault.create_secret('https://<ref>.supabase.co', 'project_url');
@@ -69,7 +70,11 @@ cannot be deleted from the app.
    npx supabase secrets set VAPID_PUBLIC_KEY=<public> VAPID_PRIVATE_KEY=<private> \
      VAPID_SUBJECT=mailto:<your address> PUSH_DISPATCH_SECRET=<same secret as in Vault>
    npx supabase functions deploy push-dispatch --no-verify-jwt
+   npx supabase functions deploy photo-sweep --no-verify-jwt
    ```
+
+   `photo-sweep` deletes one-time Going photos once every clique-mate has seen them, or after a day. It uses
+   the same `PUSH_DISPATCH_SECRET`.
 
 3. Put the public key in `EXPO_PUBLIC_VAPID_PUBLIC_KEY` for the web build.
 
@@ -99,7 +104,7 @@ backup repository.
 ## 5. Deploying
 
 Merging to `main` starts **Deploy**: the CI suite runs, then the run waits for your approval, then it applies
-migrations, deploys the Edge Function, publishes the web app and checks the site two minutes later. A newer merge replaces a run still waiting for approval, so approving always ships the latest
+migrations, deploys the Edge Functions, publishes the web app and checks the site two minutes later. A newer merge replaces a run still waiting for approval, so approving always ships the latest
 `main`.
 
 One-time setup: Settings → Environments → New environment `production` → Required reviewers → add yourself.

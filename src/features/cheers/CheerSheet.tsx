@@ -4,12 +4,16 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { cheerText, EMOJI_CHEERS, NOTE_MAX_LENGTH, WORD_CHEERS } from '@shared/cheers.ts';
+import { OneTimePhoto } from '@/features/photos/OneTimePhoto';
 import { useLanguage } from '@/lib/useLanguage';
 import { Button, ErrorMessage, Sheet, Text, TextField, colors, fonts, radii, spacing, TOUCH_TARGET } from '@/ui';
 
 import { useCheerTarget, useSendCheer, type CheerInput } from './api';
 
-/** Opened from a friend line or a Going push. One tap sends an emoji or a word; a note takes one more. */
+/**
+ * Opened from a friend line or a Going push. A Going photo, if there is one, can be opened once here.
+ * One tap sends an emoji or a word; a note takes one more.
+ */
 export function CheerSheet() {
   const { t } = useTranslation();
   const { language } = useLanguage();
@@ -28,6 +32,7 @@ export function CheerSheet() {
   return (
     <Sheet title={t('cheer.title', { name })}>
       {target.data && !open ? <Text variant="small">{t('cheer.closed')}</Text> : null}
+      {open ? <OneTimePhoto checkinId={checkinId} name={name} /> : null}
       <View style={styles.emojis}>
         {EMOJI_CHEERS.map((type) => (
           <Pressable
