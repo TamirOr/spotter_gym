@@ -5,6 +5,8 @@ describe('errorMessageKey', () => {
     expect(errorMessageKey({ message: 'not_friends' })).toBe('errors.notFriends');
     expect(errorMessageKey({ message: 'clique_full' })).toBe('errors.cliqueFull');
     expect(errorMessageKey({ message: 'routine_days_exceed_times' })).toBe('errors.routineDaysExceedTimes');
+    expect(errorMessageKey({ message: 'cannot_deactivate_self' })).toBe('errors.cannotDeactivateSelf');
+    expect(errorMessageKey({ message: 'email_taken' })).toBe('errors.emailTaken');
   });
 
   it('hides everything else behind a generic message', () => {

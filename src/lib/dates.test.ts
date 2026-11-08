@@ -1,4 +1,13 @@
-import { addDays, localToday, minutesBetween, shortTime, weekDays, weekStart, weekdayOf } from './dates';
+import {
+  addDays,
+  formatDateTime,
+  localToday,
+  minutesBetween,
+  shortTime,
+  weekDays,
+  weekStart,
+  weekdayOf,
+} from './dates';
 
 describe('dates', () => {
   it('starts weeks on Sunday', () => {
@@ -41,5 +50,13 @@ describe('dates', () => {
     const now = new Date('2026-11-04T10:00:00Z');
     expect(minutesBetween('2026-11-04T09:47:30Z', now)).toBe(12);
     expect(minutesBetween('2026-11-04T10:05:00Z', now)).toBe(0);
+  });
+});
+
+describe('formatDateTime', () => {
+  it('shows the date and a 24-hour time', () => {
+    const text = formatDateTime('2026-11-03T14:05:00Z', 'en-GB');
+    expect(text).toContain('2026');
+    expect(text).toMatch(/\d{2}:05/);
   });
 });

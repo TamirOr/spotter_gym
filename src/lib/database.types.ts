@@ -4,6 +4,7 @@
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 type Enums = {
+  approval_status: 'pending' | 'approved' | 'rejected';
   activity_kind: 'strength' | 'endurance' | 'sport' | 'mobility' | 'other';
   app_language: 'he' | 'en';
   checkin_source: 'manual' | 'place';
@@ -15,7 +16,16 @@ type Enums = {
   goal_period: 'day' | 'week' | 'month';
   goal_visibility: 'shared' | 'private';
   notification_kind:
-    'going' | 'done' | 'cheer' | 'friend_invite' | 'clique_invite' | 'plan_reminder' | 'plan_missed' | 'nudge';
+    | 'going'
+    | 'done'
+    | 'cheer'
+    | 'friend_invite'
+    | 'clique_invite'
+    | 'plan_reminder'
+    | 'plan_missed'
+    | 'nudge'
+    | 'signup_pending'
+    | 'account_approved';
   plan_exception_action: 'skip' | 'move';
   reaction_type: 'muscle' | 'fire' | 'clap' | 'trophy' | 'yalla' | 'well_done' | 'champ' | 'note';
   weekday: 'SU' | 'MO' | 'TU' | 'WE' | 'TH' | 'FR' | 'SA';
@@ -37,6 +47,11 @@ type ProfileRow = {
   quiet_hours_end: string;
   going_ignores_quiet_hours: boolean;
   created_at: string;
+  is_admin: boolean;
+  approval: Enums['approval_status'];
+  rejection_reason: string | null;
+  approved_at: string | null;
+  active: boolean;
 };
 
 type ActivityRow = {
@@ -270,6 +285,35 @@ export type Database = {
       leave_clique: { Args: { p_clique_id: string }; Returns: undefined };
       save_push_subscription: { Args: { p_subscription: Json }; Returns: undefined };
       delete_my_account: { Args: Record<string, never>; Returns: undefined };
+      admin_users: {
+        Args: Record<string, never>;
+        Returns: {
+          id: string;
+          full_name: string;
+          email: string;
+          avatar_url: string | null;
+          is_admin: boolean;
+          approval: Enums['approval_status'];
+          rejection_reason: string | null;
+          active: boolean;
+          created_at: string;
+          approved_at: string | null;
+          onboarded_at: string | null;
+          last_sign_in_at: string | null;
+        }[];
+      };
+      admin_added_users: { Args: Record<string, never>; Returns: { email: string; created_at: string }[] };
+      admin_user_support: { Args: { p_user_id: string }; Returns: Json };
+      admin_health: {
+        Args: Record<string, never>;
+        Returns: { push_backlog: number; oldest_push_minutes: number; pending_signups: number }[];
+      };
+      approve_user: { Args: { p_user_id: string }; Returns: undefined };
+      reject_user: { Args: { p_user_id: string; p_reason?: string | null }; Returns: undefined };
+      set_user_active: { Args: { p_user_id: string; p_active: boolean }; Returns: undefined };
+      delete_user: { Args: { p_user_id: string }; Returns: undefined };
+      add_user: { Args: { p_email: string }; Returns: undefined };
+      cancel_added_user: { Args: { p_email: string }; Returns: undefined };
       clique_today: {
         Args: { p_clique_id: string };
         Returns: {

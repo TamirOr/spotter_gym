@@ -5,6 +5,10 @@ name: Database
 # SUPABASE_ACCESS_TOKEN and SUPABASE_DB_PASSWORD; the SMTP_* secrets are optional (see docs/setup.md).
 on:
   workflow_dispatch:
+    inputs:
+      admin_email:
+        description: 'Make this user an admin (they must have signed in to the app once)'
+        required: false
   workflow_call:
     secrets:
       SUPABASE_ACCESS_TOKEN:
@@ -56,3 +60,11 @@ jobs:
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_PASS: ${{ secrets.SMTP_PASS }}
           SMTP_SENDER: ${{ secrets.SMTP_SENDER }}
+      - name: Make admin
+        if: ${{ inputs.admin_email }}
+        env:
+          ADMIN_EMAIL: ${{ inputs.admin_email }}
+        run: |
+          # The run page is public: keep the address out of the log.
+          echo "::add-mask::$ADMIN_EMAIL"
+          node scripts/make-admin.mjs

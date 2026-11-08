@@ -45,16 +45,20 @@ select public.remove_friendship(:'maya');
 select test.login(:'maya');
 select test.eq((select status from public.friendships), 'blocked'::public.friendship_status, 'only the blocker lifts a block');
 
--- Signing up with an email code is enough: no invite or approval.
+-- Signing up with an email code creates the profile, which waits for an admin (see test_admin.sql).
 reset role;
 insert into auth.users (email) values ('fresh@example.com') returning id as fresh \gset
 set role authenticated;
 select test.login(:'fresh');
 select test.eq((public.get_my_profile()).email, 'fresh@example.com', 'signing up creates the profile');
-select test.eq((public.get_my_profile()).full_name, '', 'the name is asked for during onboarding');
-select test.eq(public.request_friend(:'yoav'), 'request_sent', 'a new user can add friends straight away');
+select test.eq((public.get_my_profile()).full_name, '', 'the name is asked for while waiting');
+select test.fails($$insert into public.cliques (name) values ('Too early')$$, 'row-level security', 'a waiting user cannot create a clique');
+reset role;
+update public.profiles set approval = 'approved' where id = :'fresh';
+set role authenticated;
+select test.eq(public.request_friend(:'yoav'), 'request_sent', 'an approved user can add friends straight away');
 insert into public.cliques (name) values ('Fresh start');
-select test.eq((select count(*) from public.cliques where name = 'Fresh start')::integer, 1, 'a new user can create a clique');
+select test.eq((select count(*) from public.cliques where name = 'Fresh start')::integer, 1, 'an approved user can create a clique');
 
 -- Deleting an account hands the clique over and keeps sent cheers anonymous.
 select test.login(:'noa');

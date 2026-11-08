@@ -54,3 +54,10 @@ export function formatLongDate(date: Date, locale: string): string {
 export function formatWeekdayInitial(date: IsoDate, locale: string): string {
   return new Intl.DateTimeFormat(locale, { weekday: 'narrow', timeZone: 'UTC' }).format(fromIso(date));
 }
+
+/** A moment as a short date and time, such as "3 Nov 2026, 14:05", in the reader's time zone. */
+export function formatDateTime(at: string, locale: string): string {
+  return new Intl.DateTimeFormat(locale, { dateStyle: 'medium', timeStyle: 'short', hourCycle: 'h23' }).format(
+    new Date(at),
+  );
+}

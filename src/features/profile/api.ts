@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 
+import { accessOf, APPROVAL_POLL_MS } from '@/features/access/access';
 import type { Tables } from '@/lib/database.types';
 import { queryClient } from '@/lib/queryClient';
 import { queryKeys } from '@/lib/queryKeys';
@@ -29,6 +30,9 @@ export function useProfile(enabled = true) {
     queryKey: queryKeys.profile,
     queryFn: async () => unwrap(await supabase.rpc('get_my_profile')),
     enabled,
+    // A waiting user moves on by themselves once an admin approves them.
+    refetchInterval: (query) =>
+      query.state.data && accessOf(query.state.data) === 'pending' ? APPROVAL_POLL_MS : false,
   });
 }
 

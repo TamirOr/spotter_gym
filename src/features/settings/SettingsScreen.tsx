@@ -39,6 +39,9 @@ const NOTIFICATION_KINDS: Enum<'notification_kind'>[] = [
   'plan_missed',
 ];
 
+// Admins can mute the push about new sign-ups. Approval pushes cannot be muted.
+const ADMIN_NOTIFICATION_KIND: Enum<'notification_kind'> = 'signup_pending';
+
 const PAUSE_LENGTHS: PauseLength[] = ['week', 'month', 'openEnded'];
 const PAUSE_LABELS = {
   week: 'settings.pauseWeek',
@@ -104,7 +107,7 @@ export function SettingsScreen() {
 
       <SectionHeader title={t('settings.notifications')} />
       <PushToggle />
-      {NOTIFICATION_KINDS.map((kind) => (
+      {(profile.is_admin ? [...NOTIFICATION_KINDS, ADMIN_NOTIFICATION_KIND] : NOTIFICATION_KINDS).map((kind) => (
         <ToggleRow
           key={kind}
           label={t(`settings.kinds.${kind}`)}

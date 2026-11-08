@@ -13,9 +13,12 @@ const sheet = {
   contentStyle: { backgroundColor: 'transparent' },
 } as const;
 
-/** Sign-in until there is a session, onboarding until set up, then the app. */
+/**
+ * Sign-in until there is a session, waiting until approved, onboarding until set up, then the app.
+ * Admins see the admin screens or the regular app, one at a time, and switch between them.
+ */
 export function RootNavigator() {
-  const stage = useAppSession();
+  const { stage, view } = useAppSession();
   if (stage === 'loading') {
     return (
       <View style={styles.loading}>
@@ -29,10 +32,19 @@ export function RootNavigator() {
       <Stack.Protected guard={stage === 'signIn'}>
         <Stack.Screen name="sign-in" />
       </Stack.Protected>
+      <Stack.Protected guard={stage === 'waiting'}>
+        <Stack.Screen name="waiting" />
+      </Stack.Protected>
       <Stack.Protected guard={stage === 'onboarding'}>
         <Stack.Screen name="onboarding" />
       </Stack.Protected>
-      <Stack.Protected guard={stage === 'app'}>
+      {/* Listed before the regular app, so an admin lands on the admin home. */}
+      <Stack.Protected guard={stage === 'app' && view === 'admin'}>
+        <Stack.Screen name="admin/index" />
+        <Stack.Screen name="admin/users" />
+        <Stack.Screen name="admin/user/[userId]" />
+      </Stack.Protected>
+      <Stack.Protected guard={stage === 'app' && view === 'user'}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="plan/index" />
         <Stack.Screen name="friends" />

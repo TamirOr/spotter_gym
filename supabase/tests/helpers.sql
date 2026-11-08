@@ -5,12 +5,37 @@ grant execute on all functions in schema public to service_role;
 create schema test;
 grant usage on schema test to anon, authenticated, service_role;
 
--- A signed-up user. Signing up creates the profile.
-create function test.user(p_name text) returns uuid
+-- A user who signed up and is waiting for approval. Signing up creates the profile.
+create function test.pending_user(p_name text) returns uuid
 language sql as $$
   insert into auth.users (email, raw_user_meta_data)
   values (lower(p_name) || '@example.com', jsonb_build_object('full_name', p_name))
   returning id
+$$;
+
+-- A signed-up, approved user.
+create function test.user(p_name text) returns uuid
+language plpgsql as $$
+declare
+  v_id uuid := test.pending_user(p_name);
+begin
+  update public.profiles set approval = 'approved', approved_at = now() where id = v_id;
+  return v_id;
+end $$;
+
+create function test.admin(p_name text) returns uuid
+language plpgsql as $$
+declare
+  v_id uuid := test.user(p_name);
+begin
+  update public.profiles set is_admin = true where id = v_id;
+  return v_id;
+end $$;
+
+-- A test user's id by name, usable inside test.fails() statements while signed in.
+create function test.user_id(p_name text) returns uuid
+language sql stable security definer as $$
+  select id from public.profiles where email = lower(p_name) || '@example.com'
 $$;
 
 create function test.befriend(p_a uuid, p_b uuid) returns void

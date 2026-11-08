@@ -43,6 +43,23 @@ plan allows a custom email template only with one). Gmail is the simplest:
 
 Once the app has its address, add it as the GitHub variable `SITE_URL` and run the workflow again.
 
+### First admin
+
+New sign-ups wait until an admin approves them (people who signed up before approval existed stay in).
+To make the first admin:
+
+1. Sign in to the app once with the admin's email. The app shows the waiting screen; that is expected.
+2. Run Actions → Database → Run workflow, and fill in **admin_email**. The address is masked in the log.
+   (Or, in the SQL editor: `select public.promote_admin('you@example.com');`.)
+3. Reopen the app. Admins open on the admin home: sign-ups to approve, people to add ahead of time, and
+   every user. "Switch to user view" opens the regular app, with the admin's own regular rights; Me →
+   "Back to admin" returns. The device remembers the last choice.
+
+Admins approve or decline sign-ups, add someone by email so they land in the app approved, deactivate
+users (which also blocks their sign-in) and delete them. They see each user's account and support details
+(devices and recent pushes), never their workouts, goals or plans. Admins are made only this way, and
+cannot be deleted from the app.
+
 ## 3. Web push
 
 1. Generate VAPID keys: `npx web-push generate-vapid-keys`.

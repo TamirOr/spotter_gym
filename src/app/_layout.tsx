@@ -8,6 +8,7 @@ import {
 import { QueryClientProvider } from '@tanstack/react-query';
 import { StyleSheet, View } from 'react-native';
 
+import { AdminViewProvider } from '@/features/admin/AdminViewProvider';
 import { AuthProvider } from '@/features/auth/AuthProvider';
 import { RootNavigator } from '@/features/navigation/RootNavigator';
 import { initI18n } from '@/i18n';
@@ -23,7 +24,9 @@ export default function RootLayout() {
   return (
     <View style={styles.root} {...appDirection(language)}>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>{fontsLoaded ? <RootNavigator /> : null}</AuthProvider>
+        <AuthProvider>
+          <AdminViewProvider>{fontsLoaded ? <RootNavigator /> : null}</AdminViewProvider>
+        </AuthProvider>
       </QueryClientProvider>
     </View>
   );

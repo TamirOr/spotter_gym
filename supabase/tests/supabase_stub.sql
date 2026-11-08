@@ -11,7 +11,9 @@ create schema auth;
 create table auth.users (
   id uuid primary key default gen_random_uuid(),
   email text,
-  raw_user_meta_data jsonb not null default '{}'
+  raw_user_meta_data jsonb not null default '{}',
+  last_sign_in_at timestamptz,
+  banned_until timestamptz
 );
 
 -- Supabase reads the signed-in user from the request JWT; tests set the same setting directly.
