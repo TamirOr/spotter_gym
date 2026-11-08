@@ -28,7 +28,7 @@ jobs:
       - uses: supabase/setup-cli@v1
         with:
           version: latest
-      - run: supabase functions deploy push-dispatch --no-verify-jwt --project-ref rzfcjlzesuwrbaejfgyo
+      - run: supabase functions deploy push-dispatch --no-verify-jwt --remote=rzfcjlzesuwrbaejfgyo --yes
 
   web:
     needs: functions

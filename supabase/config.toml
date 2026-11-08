@@ -18,7 +18,7 @@ enable_refresh_token_rotation = true
 # Sign-in and sign-up send a 6-digit code, not a link: a link opens in Safari and would not sign in
 # the app installed on the Home Screen.
 [auth.email]
-enable_signup = true
+enabled = true
 enable_confirmations = false
 otp_length = 6
 otp_expiry = 600
