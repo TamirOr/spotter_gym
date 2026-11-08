@@ -7,6 +7,7 @@ const KNOWN_ERRORS = {
   clique_full: 'errors.cliqueFull',
   not_friends: 'errors.notFriends',
   outside_logging_window: 'errors.outsideLoggingWindow',
+  routine_days_exceed_times: 'errors.routineDaysExceedTimes',
 } as const satisfies Record<string, TranslationKey>;
 
 export function errorMessageKey(error: unknown): TranslationKey {
